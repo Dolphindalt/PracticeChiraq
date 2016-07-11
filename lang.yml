@@ -1,0 +1,176 @@
+SCOREBOARD:
+  TITLE: "&5Nanny &7|&c [Practice]"
+  ENDERPEARL: "&e\xbb &6Enderpearl&e:"
+  TEAM_INFORMATION:
+    - "&5Team Information &f\xbb"
+    - "&f\xbb &5Leader: &f%LEADER%"
+    - "&f\xbb &5Size: &f%SIZE%"
+  TEAM_FIGHT_INFORMATION:
+    - "&5Current Match &f\xbb"
+    - "&f\xbb &5Enemies alive:&f %ENEMYCOUNT%"
+    - "&f\xbb &5Friendlies alive:&f %FRIENDLYCOUNT%"
+    - "&f\xbb &5Kit:&f %LADDER%"
+    - "&f\xbb &5Starting in:&f"
+    - "&f\xbb &5Match Duration:&f"
+  MATCH_INFORMATION:
+    - "&5Current Match &f\xbb"
+    - "&f\xbb &5Opponent:&f %OPPONENT%"
+    - "&f\xbb &5Kit:&f %LADDER%"
+    - "&f\xbb &5Starting in:&f"
+    - "&f\xbb &5Match Duration:&f"
+NO_PERMISSION: "&cYou do not have permission to do this!"
+NOT_PLAYER: "&cYou must be a player to issue this command!"
+NOT_FOUND: "&cPlayer not found!"
+NOT_IN_SPAWN: "&cEither your or that player is not in spawn!"
+PLAYER_NOT_IN_SPAWN: "&cYou're not in spawn!"
+ERROR: "&cAn error occurred."
+NOPE: "&cYou can't do this!"
+INVENTORY_NOT_FOUND: "&cInventory not found!"
+STATS:
+  STATS_INVENTORY: "Statistics"
+  GLOBAL_ELO_ITEM_NAME: "&5Global Statistics"
+  ITEM_NAME: "&6%LADDER%"
+  ITEM_LORE:
+    - "&6Elo: %ELO%"
+    - ""
+    - "&bRanked Wins: %RW%"
+    - "&bRanked Losses: %RL%"
+    - "&bUnRanked Wins: %URW%"
+    - "&bUnRanked Losses: %URL%"
+    - "&aClick here to view leaderboard"
+  TOTAL_MATCHES: "&bTotal Matches: %MATCHES%"
+  LEADERBOARD:
+    HEADER: "&7&m------&b%LADDER% Leaderboard&7&m------&7(&6%PAGE%/%PAGES%&7)"
+    FORMAT: "&b[%POSITION%] &6%NAME% &7- &d%ELO% &b: &a%WINS% Wins &b: &c%LOSSES% Losses"
+    AMOUNTPERPAGE: 10
+TEAM:
+  DELETED: "&cThe team was deleted by the owner."
+  LEFT: "&c%PLAYER% left the team."
+  LIST:
+    - "&eTeam members&7:"
+    - "&e%PLAYERS%"
+  GUI:
+    NEXT_PAGE: "&e» &6Page #%PAGE%"
+    ITEM_NAME: "&e%PLAYER%'s team"
+    ITEM_LORE: "&6%PLAYER%"
+  FINISH:
+   WINNER: "&eWinner: %WINNER%"
+   INVENTORY_VIEW: "&6Inventories (click to view):&e "
+  DUEL_SENT: "&eSent duel request for &b%LADDER%&e to &a%PLAYER%&e."
+  DUEL_RECEIVED: "&eDuel request for &b%LADDER%&e received from &a%PLAYER%&e."
+  NOT_BIG_ENOUGH: "&cYou need two or more people in your team to duel!"
+TEAM_COMMAND:
+  USAGE:
+    - "&c/team <invite/join> (<player>)"
+  NOT_IN: "&cYou're not in a team!"
+  ALREADY_IN_TEAM: "&cYou're already in a team!"
+  NOT_VALID_INVITE: "&cInvalid invite!"
+  NOT_VALID_TEAM: "&cInvalid team!"
+  NOT_LEADER: "&cYou must be the leader of the team to do this!"
+  ALREADY_IN: "&cThat player is already on your team!"
+  ALREADY_INVITED: "&cThat player has already been invited to join your team!"
+  REQUEST_SENT: "&eTeam invite sent to &a%PLAYER%&e."
+  REQUESTED: "&a%PLAYER%&e invited you to their team. &7(Click to join)"
+  JOINED: "&a%PLAYER% &ejoined the team!"
+
+KIT_EDITOR:
+  INVENTORY_NAME: "&8Select Ladder"
+  ITEM_DISPLAYNAME: "&e%LADDER%"
+  TELEPORTED: "&cYou have been teleported to the kit editor!"
+  RETURNED: "&cYou have been sent back to spawn!"
+  SIGN_RETURN: "Return"
+  SAVED: "&6%KIT%&e has successfully been saved!"
+  DELETED: "&6%KIT%&e has successfully been deleted!"
+  RENAMED: "&6%KIT%&e has successfully been renamed!"
+  LOADED: "&6%KIT%&e has successfully been loaded!"
+  TALK: "&eType any word in chat to rename your kit."
+  LOAD_NAME: "Kit Selection"
+
+DUEL_COMMAND:
+  USAGE:
+    - "&c/duel <player>"
+  INVENTORY_NAME: "&8Select PvP Style"
+  ITEM_DISPLAYNAME: "&e%LADDER%"
+  REQUEST_SENT: "&eDuel request sent to &a%PLAYER%&e."
+  REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel. &7(Click to accept)"
+  NOT_VALID: "&cThat is not a valid duel request!"
+
+LADDER_COMMAND:
+  USAGE:
+    - "&c/ladder <list/setkit/addarena/removearea> (<arena>) (<ladder>)"
+  NO_LADDERS: "&cThere are currently no ladders to display."
+  NO_LADDER_FOUND: "&cLadder not found!"
+  KIT_SET: "&6Kit successfully updated!"
+  NO_KIT: "&cThat ladder does not have a kit!"
+  KIT_RECEIVED: "&6You have received the kit!"
+  ARENA_ADDED: "&6Added arena to ladder!"
+  ARENA_ALREADY_IN: "&cLadder already contains arena!"
+  ARENA_NOT_IN: "&cLadder doesn't contain arena!"
+  ARENA_REMOVED: "&cArena removed from ladder!"
+  LIST:
+    - "&7&m-----------------------------------------------"
+    - "&eLadders"
+    - "%LADDERS%"
+    - "&7&m-----------------------------------------------"
+  LIST_COLOR: GOLD
+  LIST_COMMA_COLOR: YELLOW
+
+ARENA_COMMAND:
+  USAGE:
+    - "&c/arena <create/setloc1/setloc2/delete> (<id>)"
+  NO_ARENAS: "&cThere are currently no arenas to display."
+  NO_ARENA_FOUND: "&cArena not found!"
+  ARENA_EXISTS: "&cAn arena with that ID already exists!"
+  LOCATION_ONE_SET: "&6Location #1 successfully updated!"
+  LOCATION_TWO_SET: "&6Location #2 successfully updated!"
+  DELETED: "&cArena successfully deleted!"
+  CREATED: "&6Arena successfully created!"
+  LIST:
+    - "&7&m-----------------------------------------------"
+    - "&eArenas"
+    - "%ARENAS%"
+    - "&7&m-----------------------------------------------"
+  LIST_COLOR: GOLD
+  LIST_COMMA_COLOR: YELLOW
+
+QUEUE:
+  FINISH:
+   WINNER: "&eWinner: %WINNER%"
+   INVENTORY_VIEW: "&6Inventories (click to view):&e "
+  CANCEL: "&cYou have quit matchmaking."
+  INVENTORY_TITLE1: "&8Ranked Queue Selection" #gay asf name and this is directly from the doc
+  INVENTORY_TITLE2: "&8Unranked Queue Selection"
+  INVENTORY_TITLE3: "&8Premium Ranked Queue Selection"
+  ITEM:
+    DISPLAYNAME: "&6%LADDER% Queue"
+    LORE:
+      - "&aThere are currently %SIZE% people in this queue."
+      - "&eClick to enter a match."
+  SEARCH:
+    RANKED:
+      ELO_CHANGE: "&eElo changes: &a%WINNER% (%WINNER_ELO%) (+%WINNER_AMOUNT%)&e, &c%LOSER% (%LOSER_ELO%) (-%LOSER_AMOUNT%)"
+      START: "&eYou have joined the queue for the &a%LADDER%&e ladder.\n&eYou have &b%ELO% ELO&e."
+      SEARCHING: "&eSearching for a fight.. &b[%LOW_RANGE% -> %HIGH_RANGE%]"
+      FOUND: "&eYou are now in a &branked match&e against &b%OPPONENT%&e.\n&eThey currently have &b%ELO% ELO&e."
+      NO_MATCH_FOUND: "&cNo match found."
+    PREMIUMRANKED:
+      ELO_CHANGE: "&eElo changes: &a%WINNER% (%WINNER_ELO%) (+%WINNER_AMOUNT%)&e, &c%LOSER% (%LOSER_ELO%) (-%LOSER_AMOUNT%)"
+      START: "&eYou have joined the queue for the &a%LADDER%&e ladder.\n&eYou have &b%ELO% ELO&e."
+      SEARCHING: "&eSearching for a fight.. &b[%LOW_RANGE% -> %HIGH_RANGE%]"
+      FOUND: "&eYou are now in a &bpremium ranked match&e against &b%OPPONENT%&e.\n&eThey currently have &b%ELO% ELO&e."
+      NO_MATCH_FOUND: "&cNo match found."
+    UNRANKED:
+      START: "&eYou have joined the queue for the &a%LADDER%&e ladder."
+      SEARCHING: "&eSearching for a fight.."
+      FOUND: "&eYou are now in an &bunranked match&e against &b%OPPONENT%&e."
+      NO_MATCH_FOUND: "&cNo match found."
+DONATOR:
+    PREMIUM:
+      ACCESS_DENIED: "&4You do not have premium!"
+SETTINGS:
+  MESSAGES:
+    PLAYER_VISIBILITY: "&4Player Visibility: %VALUE%"
+  INVENTORY_TITLE: "Settings"
+  ENDERPEARL:
+    NAME: "&2Toggle Players"
+    LORE: "%VALUE%"

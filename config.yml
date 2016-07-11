@@ -1,0 +1,67 @@
+DATABASE:
+  HOST: "localhost"
+  NAME: "ChiraqPracDB"
+  LOGIN:
+    ENABLED: false
+    USERNAME: "username"
+    PASSWORD: "password"
+HOTBAR_ITEMS:
+  ENABLED: true
+  BOOK:
+    DISPLAYNAME: "&eKit editor"
+    LORE:
+      - "Lore"
+  SKULL:
+    DISPLAYNAME: "&eYour stats"
+    LORE:
+      - "Lore"
+  LEASH:
+    DISPLAYNAME: "&eTeam"
+    LORE:
+      - "Lore"
+  BLUE_DYE:
+    DISPLAYNAME: "&eRanked Queue"
+    LORE:
+      - "Lore"
+  GOLD_DYE:
+    DISPLAYNAME: "&ePremium Ranked Queue"
+    Lore:
+      - "Lore"
+  IRON_DYE:
+    DISPLAYNAME: "&eUnranked Queue"
+    Lore:
+      - "Lore"
+  RED_DYE:
+    DISPLAYNAME: "&eMatchmaking"
+    LORE:
+      - "Lore"
+  WATCH:
+    DISPLAYNAME: "&eSettings"
+    LORE:
+      - "Lore"
+  TEAM:
+    RED_DYE:
+      DISPLAYNAME: "&eLeave team"
+      LORE:
+        - "Lore"
+    BOOK:
+      DISPLAYNAME: "&eList teams"
+      LORE:
+        - "Lore"
+    STAR:
+      DISPLAYNAME: "&eList members"
+      LORE:
+        - "Lore"
+QUEUE:
+#//How many rows in the queue GUI
+  ROWS: 1 
+  STARTING_RANGE: 100 
+#//Starting ELO range for ranked queue
+  RANGE_INCREASE: 100
+#//Incoments between elo range check for ranked queue
+  MAX_RANGE: 1000 
+#//Ending ELO range for ranked queue
+  UNRANKED_ATTEMPTS: 10 
+#//Unranked matchs before being able to play ranked.
+SETTINGS:
+  ROWS: 1  

@@ -1,0 +1,23 @@
+main: us.chiraq.practicepots.Nanny
+name: Nanny
+description: Practice plugin for chiraq.us
+version: 1.2.8-RELEASE
+depend: [ProtocolLib, cLib]
+commands:
+  ladder:
+  arena:
+  _:
+  duel:
+  practice:
+  team:
+  t:
+  leaderboard:
+    aliases: lb
+  settings:
+    aliases: s
+permissions:
+  staff.mod:
+    decription: Mod permissions.
+  practice.premium:
+    description: Premium donator permissions.
+    defalut: op
