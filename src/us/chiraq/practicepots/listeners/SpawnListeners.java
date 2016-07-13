@@ -28,6 +28,7 @@ implements Listener {
     @SuppressWarnings("deprecation")
 	@EventHandler
     public void onJoin(PlayerJoinEvent event) {
+    	event.getPlayer().setLevel(0);
         this.profileManager.sendToSpawn(event.getPlayer());
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.profileManager.hidePlayer(event.getPlayer(), player);

@@ -1,8 +1,5 @@
 package us.chiraq.practicepots.game.fight;
 
-import com.alexandeh.glaedr.scoreboards.Entry;
-import com.alexandeh.glaedr.scoreboards.PlayerScoreboard;
-
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
@@ -37,8 +34,8 @@ public class Duel {
     private boolean started;
     private boolean countdown;
     private int ranked;
-    private PlayerScoreboard scoreboard1;
-    private PlayerScoreboard scoreboard2;
+    //private PlayerScoreboard scoreboard1;
+    //private PlayerScoreboard scoreboard2;
     private BukkitTask task;
 
     public Duel(Player player1, Player player2, Profile profile1, Profile profile2, Ladder ladder, Arena arena, int ranked) {
@@ -59,8 +56,8 @@ public class Duel {
             ladder.getUnrankedQueue().remove((Object)player1);
             ladder.getUnrankedQueue().remove((Object)player2);
         }
-        this.scoreboard1 = PlayerScoreboard.getScoreboard(player1);
-        this.scoreboard2 = PlayerScoreboard.getScoreboard(player2);
+        //this.scoreboard1 = PlayerScoreboard.getScoreboard(player1);
+        //this.scoreboard2 = PlayerScoreboard.getScoreboard(player2);
         profile1.setDuel(this);
         profile2.setDuel(this);
         profile1.setInSpawn(false);
@@ -79,7 +76,7 @@ public class Duel {
         this.player2.teleport(this.arena.getSpawnLocations()[1]);
         this.player1.getInventory().clear();
         this.player2.getInventory().clear();
-        for (String information : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
+        /*for (String information : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
             if (information.contains("Duration") || information.contains("Warm")) {
                 if (information.contains("Duration")) {
                     new Entry(information, this.scoreboard1).setText(information).setCountup(true).setTime(0.0).send();
@@ -92,7 +89,7 @@ public class Duel {
             }
             new Entry(information, this.scoreboard1).setText(information.replace("%OPPONENT%", this.player2.getName()).replace("%LADDER%", this.ladder.getName())).send();
             new Entry(information, this.scoreboard2).setText(information.replace("%OPPONENT%", this.player1.getName()).replace("%LADDER%", this.ladder.getName())).send();
-        }
+        }*/
         if (this.profile1.getKits(this.ladder).isEmpty()) {
             if (this.ladder.getKit() != null) {
                 this.ladder.getKit().apply(this.player1);
@@ -205,13 +202,13 @@ public class Duel {
         return this.ranked;
     }
 
-    public PlayerScoreboard getScoreboard1() {
+    /*public PlayerScoreboard getScoreboard1() {
         return this.scoreboard1;
     }
 
     public PlayerScoreboard getScoreboard2() {
         return this.scoreboard2;
-    }
+    }*/
 
     public BukkitTask getTask() {
         return this.task;
@@ -265,13 +262,14 @@ public class Duel {
         this.ranked = ranked;
     }
 
-    public void setScoreboard1(PlayerScoreboard scoreboard1) {
+    /*public void setScoreboard1(PlayerScoreboard scoreboard1) {
         this.scoreboard1 = scoreboard1;
     }
 
     public void setScoreboard2(PlayerScoreboard scoreboard2) {
         this.scoreboard2 = scoreboard2;
     }
+    */
 
     public void setTask(BukkitTask task) {
         this.task = task;

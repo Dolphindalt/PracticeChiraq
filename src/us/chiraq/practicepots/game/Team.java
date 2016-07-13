@@ -1,8 +1,5 @@
 package us.chiraq.practicepots.game;
 
-import com.alexandeh.glaedr.scoreboards.Entry;
-import com.alexandeh.glaedr.scoreboards.PlayerScoreboard;
-
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.LangFile;
 import us.chiraq.practicepots.game.Ladder;
@@ -17,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Team {
@@ -44,7 +39,7 @@ public class Team {
         this.profiles = new HashSet<Profile>();
         this.challenges = new HashMap<Team, Ladder>();
         this.addPlayer(leader);
-        this.task = new BukkitRunnable(){
+        /*this.task = new BukkitRunnable(){
 
             public void run() {
                 for (Player player : Team.this.members) {
@@ -62,7 +57,7 @@ public class Team {
                     }
                 }
             }
-        }.runTaskTimer((Plugin)this.main, 0, 2);
+        }.runTaskTimer((Plugin)this.main, 0, 2);*/
         Team.getTeams().add(this);
     }
 
@@ -72,7 +67,7 @@ public class Team {
         }
     }
 
-    public Set<PlayerScoreboard> getScoreboards() {
+    /*public Set<PlayerScoreboard> getScoreboards() {
         HashSet<PlayerScoreboard> toReturn = new HashSet<PlayerScoreboard>();
         if (this.members != null) {
             for (Player player : this.members) {
@@ -80,7 +75,7 @@ public class Team {
             }
         }
         return toReturn;
-    }
+    }*/
 
     public void delete() {
         Team team = this;
@@ -94,7 +89,7 @@ public class Team {
             this.duel.setWinner(team.getOpponent());
         }
         for (Player teamPlayer : team.getMembers()) {
-            this.resetScoreboard(teamPlayer);
+            //this.resetScoreboard(teamPlayer);
             this.pm.sendToSpawn(teamPlayer);
         }
         if (this.task != null) {
@@ -107,7 +102,7 @@ public class Team {
         Team.getTeams().remove(this);
     }
 
-    public void resetScoreboard(Player player) {
+    /*public void resetScoreboard(Player player) {
         PlayerScoreboard playerScoreboard = PlayerScoreboard.getScoreboard(player);
         List<String> toLoop = this.lf.getStringList("SCOREBOARD.TEAM_FIGHT_INFORMATION");
         toLoop.addAll(this.lf.getStringList("SCOREBOARD.TEAM_INFORMATION"));
@@ -119,7 +114,7 @@ public class Team {
         if (playerScoreboard.getEntry("enderpearl") != null) {
             playerScoreboard.getEntry("enderpearl").setCancelled(true);
         }
-    }
+    }*/
 
     public void removePlayer(Player player) {
         if (this.members.contains((Object)player) && !player.getName().equalsIgnoreCase(this.leader.getName())) {
@@ -127,7 +122,7 @@ public class Team {
             Profile profile = Profile.getProfile(player.getUniqueId());
             profile.setTeam(null);
             this.profiles.remove(profile);
-            this.resetScoreboard(player);
+            //this.resetScoreboard(player);
             this.pm.sendToSpawn(player);
         }
     }

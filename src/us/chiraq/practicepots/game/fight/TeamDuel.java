@@ -1,7 +1,5 @@
 package us.chiraq.practicepots.game.fight;
 
-import com.alexandeh.glaedr.scoreboards.Entry;
-import com.alexandeh.glaedr.scoreboards.PlayerScoreboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +85,7 @@ public class TeamDuel {
             for (Player team1PlayerHidden1 : team.getMembers()) {
                 player.showPlayer(team1PlayerHidden1);
             }
-            team.resetScoreboard(player);
+            //team.resetScoreboard(player);
         }
     }
 
@@ -111,7 +109,7 @@ public class TeamDuel {
         }
     }
 
-    private void setupScoreboard() {
+    /*private void setupScoreboard() {
         for (PlayerScoreboard scoreboard2 : this.team1.getScoreboards()) {
             for (String information : this.lf.getStringList("SCOREBOARD.TEAM_FIGHT_INFORMATION")) {
                 if (information.contains("Duration") || information.contains("Warm")) {
@@ -138,7 +136,7 @@ public class TeamDuel {
                 new Entry(information, scoreboard2).setText(information.replace("%FRIENDLYCOUNT%", "" + this.team2Left + "").replace("%ENEMYCOUNT%", "" + this.team1Left + "").replace("%LADDER%", this.ladder.getName())).send();
             }
         }
-    }
+    }*/
 
     public void setWinner(final Team team) {
         this.team1.setInFight(false);
@@ -149,7 +147,7 @@ public class TeamDuel {
         for (int i = 1; i < this.getAllPlayers().size() + 1; ++i) {
             Player player = this.getAllPlayers().get(i - 1);
             player.sendMessage(this.lf.getString("TEAM.FINISH.WINNER").replace("%WINNER%", team.getLeader().getName()));
-            team.resetScoreboard(player);
+            //team.resetScoreboard(player);
             if (i == this.getAllPlayers().size()) {
                 fancyMessage.then((Object)ChatColor.YELLOW + player.getName()).command("/_ " + player.getUniqueId());
                 continue;
@@ -176,7 +174,7 @@ public class TeamDuel {
         this.countdown = true;
         this.setupTeam(this.team1, this.arena.getSpawnLocations()[0]);
         this.setupTeam(this.team2, this.arena.getSpawnLocations()[1]);
-        this.setupScoreboard();
+        //this.setupScoreboard();
         for (int i = 0; i < 6; ++i) {
             final int finalI = i;
             new BukkitRunnable(){
@@ -195,7 +193,7 @@ public class TeamDuel {
                     TeamDuel.this.started = true;
                 }
             }.runTaskLater((Plugin)this.main, (long)(20 * i));
-            this.task = new BukkitRunnable(){
+            /*this.task = new BukkitRunnable(){
 
                 public void run() {
                     int amount;
@@ -229,7 +227,7 @@ public class TeamDuel {
                         }
                     }
                 }
-            }.runTaskTimer((Plugin)this.main, 2, 2);
+            }.runTaskTimer((Plugin)this.main, 2, 2); */
         }
     }
 

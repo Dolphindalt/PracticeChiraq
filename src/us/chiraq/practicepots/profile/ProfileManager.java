@@ -72,6 +72,7 @@ private ProtocolManager protocolManager = this.main.getProtocolManager();
   
   @SuppressWarnings("deprecation")
 public void sendToSpawn(Player player) {
+	  player.setLevel(0);
       player.teleport(player.getWorld().getSpawnLocation());
       Profile profile = Profile.getProfile(player.getUniqueId()) == null ? new Profile(player.getUniqueId()) : Profile.getProfile(player.getUniqueId());
       profile.setCurrentKit(null);
@@ -209,5 +210,5 @@ public void showPlayer(Player hiding, Player from) {
 	PacketPlayOutPlayerInfo packet = PacketPlayOutPlayerInfo.removePlayer(nmsHiding);
 	nmsFrom.playerConnection.sendPacket(packet);
 }
-  
+
 }

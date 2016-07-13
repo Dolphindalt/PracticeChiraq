@@ -1,8 +1,5 @@
 package us.chiraq.practicepots.listeners;
 
-import com.alexandeh.glaedr.scoreboards.Entry;
-import com.alexandeh.glaedr.scoreboards.PlayerScoreboard;
-
 import java.util.Arrays;
 
 import mkremins.fanciful.FancyMessage;
@@ -17,6 +14,7 @@ import us.chiraq.practicepots.game.fight.Duel;
 import us.chiraq.practicepots.game.fight.TeamDuel;
 import us.chiraq.practicepots.profile.Profile;
 import us.chiraq.practicepots.profile.ProfileManager;
+import us.chiraq.practicepots.tasks.EXPBarTask;
 import us.chiraq.practicepots.utils.Data;
 import us.chiraq.practicepots.utils.EloCalculator;
 import us.chiraq.practicepots.utils.InventorySave;
@@ -48,7 +46,7 @@ implements Listener {
     private Nanny main = Nanny.getInstance();
     private LangFile lf = this.main.getLangFile();
     private ProfileManager pm = this.main.getProfileManager();
-
+    
     /*
      * Enabled force condition propagation
      * Lifted jumps to return sites
@@ -211,7 +209,7 @@ implements Listener {
             }
             profile.getTeam().sendMessage(this.lf.getString("TEAM.LEFT").replace("%PLAYER%", player.getName()));
             profile.getTeam().removePlayer(player);
-            profile.getTeam().resetScoreboard(player);
+            //profile.getTeam().resetScoreboard(player);
             if (profile.getTeam().getDuel() != null) {
                 TeamDuel duel = profile.getTeam().getDuel();
                 if (duel.getTeam1().equals(profile.getTeam())) {
@@ -235,17 +233,17 @@ implements Listener {
             duel.getProfile2().setInSpawn(true);
             final Player otherPlayer = duel.getPlayer1() != player ? duel.getPlayer1() : duel.getPlayer2();
             Profile otherProfile = Profile.getProfile(otherPlayer.getUniqueId());
-            PlayerScoreboard scoreboard1 = duel.getScoreboard1();
-            PlayerScoreboard scoreboard2 = duel.getScoreboard2();
-            for (String string : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
+            //PlayerScoreboard scoreboard1 = duel.getScoreboard1();
+            //PlayerScoreboard scoreboard2 = duel.getScoreboard2();
+            /*for (String string : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
                 if (scoreboard1.getEntry(string) != null) {
                     scoreboard1.getEntry(string).setCancelled(true);
                 }
                 if (scoreboard2.getEntry(string) == null) continue;
                 scoreboard2.getEntry(string).setCancelled(true);
-            }
+            }*/
             new InventorySave(otherPlayer);
-            if (duel.getRanked() == 0) { //TODO: Something
+            if (duel.getRanked() == 0) {
                 int otherElo = otherProfile.getRank().get(duel.getLadder());
                 int elo = profile.getRank().get(duel.getLadder());
                 int[] results = EloCalculator.getNewRankings(otherElo, elo, true);
@@ -291,13 +289,14 @@ implements Listener {
     public void onDeath(PlayerDeathEvent e)
     {
       e.getDrops().clear();
+      e.setDroppedExp(0);
       
       final Player player = e.getEntity();
       
-      PlayerScoreboard scoreboard = PlayerScoreboard.getScoreboard(player);
+      /*PlayerScoreboard scoreboard = PlayerScoreboard.getScoreboard(player);
       if (scoreboard.getEntry("enderpearl") != null) {
         scoreboard.getEntry("enderpearl").setCancelled(true);
-      }
+      }*/
       Profile profile = Profile.getProfile(player.getUniqueId());
       
       new InventorySave(player);
@@ -318,7 +317,7 @@ implements Listener {
         } else if (duel.getTeam2Left() == 0) {
           duel.setWinner(duel.getTeam1());
         }
-        profile.getTeam().resetScoreboard(player);
+        //profile.getTeam().resetScoreboard(player);
         
         new BukkitRunnable()
         {
@@ -347,7 +346,7 @@ implements Listener {
         }
         Profile otherProfile = Profile.getProfile(otherPlayer.getUniqueId());
         
-        PlayerScoreboard scoreboard1 = duel.getScoreboard1();
+        /*PlayerScoreboard scoreboard1 = duel.getScoreboard1();
         PlayerScoreboard scoreboard2 = duel.getScoreboard2();
         for (String string : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION"))
         {
@@ -357,7 +356,7 @@ implements Listener {
           if (scoreboard2.getEntry(string) != null) {
             scoreboard2.getEntry(string).setCancelled(true);
           }
-        }
+        }*/
         new InventorySave(otherPlayer);
         if (duel.getRanked() == 0)
         {
@@ -443,10 +442,18 @@ implements Listener {
     	}
     }
     
-    @EventHandler
+	@EventHandler
     public void onPearl(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        PlayerScoreboard scoreboard = PlayerScoreboard.getScoreboard(player);
+        //PlayerScoreboard scoreboard = PlayerScoreboard.getScoreboard(player);
+        Profile pro = Profile.getProfile(player.getUniqueId());
+        if (pro.getDuel() != null) {
+        	if (pro.getDuel().isCountdown()) {
+        		e.setCancelled(true);
+        		player.sendMessage(ChatColor.RED + "The duel has not started yet!");
+        		return;
+        	}
+        }
         if (e.getItem() != null && e.getItem().getType() == Material.ENDER_PEARL) {
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 e.setCancelled(true);
@@ -454,14 +461,29 @@ implements Listener {
                 return;
             }
             if (e.getAction() == Action.RIGHT_CLICK_AIR) {
-                Entry entry = scoreboard.getEntry("enderpearl");
+            	if (player.getLevel() != 0) {
+            		e.setCancelled(true);
+            		player.updateInventory();
+            		player.sendMessage(ChatColor.YELLOW + "You must wait " + ChatColor.RED + player.getLevel() + ChatColor.YELLOW + " before enderpearling again!");
+            		return;
+            	} else {
+            		player.setLevel(16);
+            		new EXPBarTask(player, pro).runTaskTimerAsynchronously(main, 0L, 20L);
+            		return;
+            	}
+                /*Entry entry = scoreboard.getEntry("enderpearl");
                 if (entry == null) {
-                    new Entry("enderpearl", scoreboard).setText(this.lf.getString("SCOREBOARD.ENDERPEARL")).setCountdown(true).setTime(16.0).send();
+                    //new Entry("enderpearl", scoreboard).setText(this.lf.getString("SCOREBOARD.ENDERPEARL")).setCountdown(true).setTime(16.0).send();
+                	Entry en = new Entry("enderpearl", scoreboard).setText(this.lf.getString("SCOREBOARD.ENDERPEARL"));
+                	en.setCountdown(true);
+                	en.setTime(16.0);
+                	en.send();
                 } else {
                     e.setCancelled(true);
                     player.updateInventory();
                     player.sendMessage((Object)ChatColor.YELLOW + "You must wait " + (Object)ChatColor.RED + entry.getTextTime() + (Object)ChatColor.YELLOW + " before enderpearling again!");
-                }
+                }*/
+            	
             }
         }
     }

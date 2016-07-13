@@ -1,6 +1,5 @@
 package us.chiraq.practicepots;
 
-import com.alexandeh.glaedr.Glaedr;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -60,7 +59,7 @@ extends JavaPlugin {
     private ConfigFile configFile;
     private LangFile langFile;
     private ProfileManager profileManager;
-    private Glaedr glaedr;
+    //private Glaedr glaedr;
     private ProtocolManager protocolManager;
     private Location kitEditor;
     private MongoClient mc;
@@ -71,17 +70,17 @@ extends JavaPlugin {
         instance = this;
         this.configFile = new ConfigFile();
         this.langFile = new LangFile();
-        this.glaedr = new Glaedr(this, this.langFile.getString("SCOREBOARD.TITLE"));
+        //this.glaedr = new Glaedr(this, this.langFile.getString("SCOREBOARD.TITLE"));
         
         //Scoreboard Lines (Start)
-        this.glaedr.getTopWrappers().add("&7&m----------------------");
-        this.glaedr.getBottomWrappers().add("&7&m----------------------");
+        //this.glaedr.getTopWrappers().add("&7&m----------------------");
+        //this.glaedr.getBottomWrappers().add("&7&m----------------------");
         //Scoreboard Lines (End)
         
         if (this.configFile.getConfiguration().contains("KIT_EDITOR")) {
             this.kitEditor = LocationSerialization.deserializeLocation(this.configFile.getString("KIT_EDITOR"));
         }
-        this.glaedr.registerPlayers();
+        //this.glaedr.registerPlayers();
         this.setupDatabase();
         Data.loadArenas();
         Data.loadLadders();
@@ -89,6 +88,7 @@ extends JavaPlugin {
         this.registerManagers();
         this.registerListeners();
         this.registerCommands();
+        this.registerTasks();
         this.protocolManager = ProtocolLibrary.getProtocolManager();
         this.protocolManager.addPacketListener((PacketListener)new PacketAdapter((Plugin)this, new PacketType[]{WrapperPlayServerWorldEvent.TYPE}){
 
@@ -191,6 +191,10 @@ extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents((Listener)new EditorListeners(), (Plugin)this);
     }
 
+    private void registerTasks() {
+
+    }
+    
     @SuppressWarnings("deprecation")
 	private void setupDatabase() {
         ConfigFile configFile = this.getConfigFile();
@@ -224,9 +228,9 @@ extends JavaPlugin {
         return this.profileManager;
     }
 
-    public Glaedr getGlaedr() {
-        return this.glaedr;
-    }
+    //public Glaedr getGlaedr() {
+    //    return this.glaedr;
+    //}
 
     public ProtocolManager getProtocolManager() {
         return this.protocolManager;

@@ -3,8 +3,11 @@ package us.chiraq.practicepots.utils.packets;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.IntEnum;
+
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import us.chiraq.practicepots.utils.packets.AbstractPacket;
 
 public class WrapperPlayServerWorldEvent
   extends AbstractPacket
