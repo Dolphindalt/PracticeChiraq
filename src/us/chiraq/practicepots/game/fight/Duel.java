@@ -128,17 +128,31 @@ public class Duel {
         
     	player1.showPlayer(player2);
     	player2.showPlayer(player1);
-        
+
+    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
+    	
         this.profile1.setInvulnerability(true);
         this.profile2.setInvulnerability(true);
+        
+        new BukkitRunnable() {
+        	public void run() {
+                Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
+                Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
+                
+            	player1.showPlayer(player2);
+            	player2.showPlayer(player1);
+
+            	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+            	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
+        	}
+        }.runTaskLater(main, 5L);
         
         for (int i = 0; i < 6; ++i) {
             final int finalI = i;
             this.task = new BukkitRunnable(){
 
                 public void run() {
-                	player1.showPlayer(player2);
-                	player2.showPlayer(player1);
                     int pitch = 1;
                     if (finalI == 5) {
                         pitch = 2;

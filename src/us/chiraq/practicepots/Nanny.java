@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -130,6 +131,8 @@ extends JavaPlugin {
                 }
             }
         });
+        
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Powered by " + ChatColor.GREEN + "Vapor " + ChatColor.RED + "Spigot" + ChatColor.GREEN + ", the official jar of Chiraq.us!");
     }
 
     public void onDisable() {

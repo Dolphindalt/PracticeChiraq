@@ -3,10 +3,14 @@ package us.chiraq.practicepots.profile;
 import com.comphenix.protocol.ProtocolManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.server.v1_7_R4.EntityPlayer;
+import net.minecraft.server.v1_7_R4.EntityTracker;
+import net.minecraft.server.v1_7_R4.EntityTrackerEntry;
 import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_7_R4.WorldServer;
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
@@ -15,7 +19,10 @@ import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -209,6 +216,25 @@ public void showPlayer(Player hiding, Player from) {
 	EntityPlayer nmsHiding = ((CraftPlayer)hiding).getHandle();
 	PacketPlayOutPlayerInfo packet = PacketPlayOutPlayerInfo.removePlayer(nmsHiding);
 	nmsFrom.playerConnection.sendPacket(packet);
+}
+
+public void forceUpdateEntity(Entity entity, Player observer) {
+	World world = entity.getWorld();
+	WorldServer worldServer = ((CraftWorld) world).getHandle();
+	
+	EntityTracker tracker = worldServer.tracker;
+	EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(entity.getEntityId());
+	
+	EntityPlayer nmsPlayers = getNmsPlayer(observer);
+	
+	entry.trackedPlayers.remove(nmsPlayers);
+	entry.scanPlayers(Arrays.asList(nmsPlayers));
+}
+
+private static EntityPlayer getNmsPlayer(Player player) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+ 
+    return craftPlayer.getHandle();
 }
 
 }
