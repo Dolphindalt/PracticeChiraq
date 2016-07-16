@@ -174,3 +174,6 @@ SETTINGS:
   ENDERPEARL:
     NAME: "&2Toggle Players"
     LORE: "%VALUE%"
+SPECTATOR:
+  IN_SPECTATOR_MESSAGE: "&4You need to exit spectator mode first!"
+  JOIN: "&aYou are now spectating %PLAYER%!"

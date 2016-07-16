@@ -431,6 +431,10 @@ public class QueueListeners
       }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.NAME_TAG) {
           e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
           if (profile.isInSpawn() && profile.getTeam() == null) {
               profile.setTeam(new Team(player));
               return;
@@ -438,6 +442,10 @@ public class QueueListeners
       }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.WATCH) {
     	  e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
     	  if (profile.isInSpawn()) {
     		  inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("SETTINGS.ROWS")), SETTINGS_INVENTORY_TITLE);
     		  ItemStack itemStack = Items.builder().setMaterial(Material.ENDER_PEARL).setName(this.lf.getString("SETTINGS.ENDERPEARL.NAME"))
@@ -449,6 +457,10 @@ public class QueueListeners
       }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.SKULL_ITEM) {
           e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
           if (profile.isInSpawn()) {
               inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("QUEUE.ROWS")), (String)this.lf.getString("STATS.STATS_INVENTORY")); //TODO: Implement Stats
               int rwt = profile.calculateTotalFromHashMap(profile.getRankedWins());
@@ -487,6 +499,10 @@ public class QueueListeners
       }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.BOOK && profile.isInSpawn()) {
           e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
           if (profile.getTeam() != null) {
               player.openInventory(this.pm.getTeamDuelInventory(player, profile.getTeam(), 1));
               return;
@@ -503,6 +519,10 @@ public class QueueListeners
     	      (profile.isInSpawn()))
     	    {
     	      e.setCancelled(true);
+              if (profile.isInSpectator()) {
+            	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+            	  return;
+              }
     	      {
     	        player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE1));
     	      }
@@ -510,6 +530,10 @@ public class QueueListeners
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.IRON_SWORD) && (profile.isInSpawn()))
       {
     	  e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
     	  {
     		  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE2));
     	  }
@@ -517,12 +541,16 @@ public class QueueListeners
       }
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.GOLD_SWORD) && (profile.isInSpawn()))
       {
+    	  e.setCancelled(true);
     	  if (!player.hasPermission("practice.premium"))
     	  {
     		  player.sendMessage(this.lf.getString("DONATOR.PREMIUM.ACCESS_DENIED"));
     		  return;
     	  }
-    	  e.setCancelled(true);
+          if (profile.isInSpectator()) {
+        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+        	  return;
+          }
     	  {
     		  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE3));
     	  }
@@ -531,6 +559,14 @@ public class QueueListeners
     	    	  if (e.getItem().getType() != Material.AIR) {
     	    		  if (e.getItem().getDurability() == 1 && (e.getItem().getType() == Material.INK_SACK))
     	      			{
+    	    			  if (profile.isInSpectator()) {
+    	    				  e.setCancelled(true);
+    	    				  Profile.getProfile(profile.getSpectatingPlayer().getUniqueId()).removeSpectator(player);
+    	    				  profile.setSpectating(null);
+    	    				  profile.setInSpectator(false);
+    	    				  pm.sendToSpawn(player);
+    	    				  return;
+    	    			  }
     	    			  if (profile.getTeam() != null)
     	    			  {
     	    				  Team team = profile.getTeam();
@@ -552,6 +588,7 @@ public class QueueListeners
     	    				  profile.getSearchingLadder().getUnrankedQueue().remove(player);
     	    				  profile.getSearchingLadder().getRankedQueue().remove(player);
     	    				  profile.getSearchingLadder().getPremiumRankedQueue().remove(player);
+    	    				  profile.setQueue(null);
     	    				  player.sendMessage(this.lf.getString("QUEUE.CANCEL"));
     	    			  }
     	    			  this.main.getProfileManager().giveSpawnItems(player);

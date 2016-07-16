@@ -19,6 +19,7 @@ import us.chiraq.practicepots.commands.LadderCommand;
 import us.chiraq.practicepots.commands.LeaderboardCommands;
 import us.chiraq.practicepots.commands.SaintCommand;
 import us.chiraq.practicepots.commands.SettingsCommand;
+import us.chiraq.practicepots.commands.SpectatorCommands;
 import us.chiraq.practicepots.commands.TeamCommand;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
@@ -180,6 +181,8 @@ extends JavaPlugin {
         this.getCommand("t").setTabCompleter((TabCompleter)new TeamCommand());
         this.getCommand("leaderboard").setExecutor((CommandExecutor)new LeaderboardCommands());
         this.getCommand("settings").setExecutor((CommandExecutor)new SettingsCommand());
+        this.getCommand("spectator").setExecutor((CommandExecutor)new SpectatorCommands(profileManager));
+        this.getCommand("spectator").setTabCompleter((TabCompleter)new SpectatorCommands(profileManager));
     }
 
     private void registerManagers() {

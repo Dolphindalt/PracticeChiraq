@@ -25,11 +25,11 @@ HOTBAR_ITEMS:
       - "Lore"
   GOLD_DYE:
     DISPLAYNAME: "&ePremium Ranked Queue"
-    Lore:
+    LORE:
       - "Lore"
   IRON_DYE:
     DISPLAYNAME: "&eUnranked Queue"
-    Lore:
+    LORE:
       - "Lore"
   RED_DYE:
     DISPLAYNAME: "&eMatchmaking"
@@ -52,6 +52,11 @@ HOTBAR_ITEMS:
       DISPLAYNAME: "&eList members"
       LORE:
         - "Lore"
+SPECTATOR_HOTBAR_ITEMS:
+  RED_DYE:
+    DISPLAYNAME: "&eLeave Spectator Mode"
+    LORE:
+      - "Lore"
 QUEUE:
 #//How many rows in the queue GUI
   ROWS: 1 

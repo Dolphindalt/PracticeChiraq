@@ -11,6 +11,7 @@ import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -131,6 +132,20 @@ public class Duel {
 
     	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
     	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
+    	
+    	for (Player p1 : profile1.getSpectatingPlayers()) {
+    		p1.showPlayer(player1);
+    		p1.showPlayer(player2);
+    		p1.teleport(player1);
+    		p1.setGameMode(GameMode.CREATIVE);
+    	}
+    	
+    	for (Player p2 : profile2.getSpectatingPlayers()) {
+    		p2.showPlayer(player1);
+    		p2.showPlayer(player2);
+    		p2.teleport(player2);
+    		p2.setGameMode(GameMode.CREATIVE);
+    	}
     	
         this.profile1.setInvulnerability(true);
         this.profile2.setInvulnerability(true);

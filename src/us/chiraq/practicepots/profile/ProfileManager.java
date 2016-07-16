@@ -18,6 +18,7 @@ import us.chiraq.practicepots.game.Team;
 import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
@@ -97,8 +98,10 @@ public void sendToSpawn(Player player) {
       player.setFoodLevel(20);
       player.setHealth(20);
       player.setFireTicks(0);
-      if (profile.getTeam() != null) {
+      if (profile.getTeam() != null && !profile.isInSpectator()) {
           this.giveTeamItems(player);
+      } else if (profile.isInSpectator()) {
+    	  
       } else {
           this.giveSpawnItems(player);
       }
@@ -120,6 +123,17 @@ public void sendToSpawn(Player player) {
     player.getInventory().setItem(8, star);
     
     player.updateInventory();
+  }
+  
+  public void giveSpectatorItems(Player player) {
+	  ItemStack redDye = Items.builder().setMaterial(Material.INK_SACK).setData((short)1).setName(this.cf.getString("SPECTATOR_HOTBAR_ITEMS.RED_DYE.DISPLAYNAME")).setLore(this.cf.getStringList("SPECTATOR_HOTBAR_ITEMS.RED_DYE.LORE")).build();
+	  
+	  player.getInventory().clear(); 
+	  player.getInventory().setArmorContents(null);
+	  
+	  player.getInventory().setItem(0, redDye);
+	  
+	  player.updateInventory();
   }
   
   public void giveSpawnItems(Player player)
@@ -235,6 +249,52 @@ private static EntityPlayer getNmsPlayer(Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
  
     return craftPlayer.getHandle();
+}
+
+public void spectatePlayer(Player fighter, Player sender, Profile f, Profile s) {
+	if (f.isInSpectator()) {
+		sender.sendMessage(ChatColor.RED + fighter.getName() + " is spectating someone already!");
+		return;
+	}
+	if (s.isInSpectator()) {
+		sender.sendMessage(ChatColor.RED + "You are already spectating!");
+		return;
+	}
+	if (s.getDuel() != null) {
+		sender.sendMessage(ChatColor.RED + "You cannot spectate while in a duel!");
+		return;
+	}
+	if (s.getTeam() != null) {
+		sender.sendMessage(ChatColor.RED + "You cannot spectate while part of a team!");
+		return;
+	}
+	if (s.getQueue() != null) {
+		sender.sendMessage(ChatColor.RED + "You cannot spectate while in a queue!");
+		return;
+	}
+	if (s.getSpectatingPlayers().size() != 0) {
+		for (Player player : s.getSpectatingPlayers()) {
+			Profile p = Profile.getProfile(player.getUniqueId());
+			p.setSpectating(null);
+			p.setInSpectator(false);
+			this.sendToSpawn(player);
+			player.sendMessage(ChatColor.RED + "The player you were spectating is now a spectator!");
+		}
+		s.getSpectatingPlayers().clear();
+		return;
+	}
+	s.addSpectator(sender);
+	s.setSpectating(fighter);
+	s.setInSpectator(true);
+	sender.sendMessage(this.lf.getString("SPECTATOR.JOIN").replace("%PLAYER%", fighter.getName()));
+	if (f.getDuel() != null) {
+		this.hidePlayerFromAll(sender);
+		sender.showPlayer(f.getDuel().getPlayer1());
+		sender.showPlayer(f.getDuel().getPlayer2());
+		sender.teleport(fighter);
+	}
+	this.giveSpectatorItems(sender);
+	return;
 }
 
 }

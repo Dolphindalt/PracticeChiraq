@@ -14,7 +14,9 @@ commands:
   leaderboard:
     aliases: lb
   settings:
-    aliases: s
+    aliases: set
+  spectator:
+    aliases: spec
 permissions:
   staff.mod:
     decription: Mod permissions.

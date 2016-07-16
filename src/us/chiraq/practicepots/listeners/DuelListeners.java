@@ -21,6 +21,7 @@ import us.chiraq.practicepots.utils.InventorySave;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -178,8 +179,16 @@ implements Listener {
         		e.setCancelled(true);
         		return;
         	}
+        	if (pro.isInSpectator()) {
+        		e.setCancelled(true);
+        		return;
+        	}
         	if (e.getDamager() instanceof Player) {
         		Profile damager = Profile.getProfile(((Player)e.getDamager()).getUniqueId());
+        		if (damager.isInSpectator()) {
+        			e.setCancelled(true);
+        			return;
+        		}
         		if (damager.getTeam() != null) {
         			damager.getTeam().getMembers().contains((Object)e.getEntity());
         			e.setCancelled(true);
@@ -201,6 +210,12 @@ implements Listener {
         Player player = e.getPlayer();
         Profile profile = Profile.getProfile(player.getUniqueId());
         new InventorySave(player);
+        if (profile.isInSpectator()) {
+        	profile.setInSpectator(false);
+        	profile.setSpectating(null);
+        	player.setGameMode(GameMode.SURVIVAL);
+        	return;
+        }
         if (profile.getTeam() != null) {
             if (profile.getTeam().getLeader().getName().equalsIgnoreCase(player.getName())) {
                 profile.getTeam().sendMessage(this.lf.getString("TEAM.DELETED"));
@@ -502,6 +517,15 @@ implements Listener {
     	}
     	winner.setTotalMatches(winner.getTotalMatches() + 1);
     	loser.setTotalMatches(loser.getTotalMatches() + 1);
+    	
+    	for (Player player : winner.getSpectatingPlayers()) {
+    		player.setGameMode(GameMode.SURVIVAL);
+    		DuelListeners.this.pm.sendToSpawn(player);
+    	}
+    	for (Player player : loser.getSpectatingPlayers()) {
+    		player.setGameMode(GameMode.SURVIVAL);
+    		DuelListeners.this.pm.sendToSpawn(player);
+    	}
     }
     
 }

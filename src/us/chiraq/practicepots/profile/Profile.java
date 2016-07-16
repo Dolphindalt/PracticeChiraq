@@ -41,6 +41,8 @@ public class Profile {
     private boolean inSpawn;
     private boolean inArena;
     private boolean inKitEditor;
+    private boolean inSpectator;
+    private Player spectating;
     private Ladder searchingLadder;
     private int searchingRange;
     private BukkitTask queue;
@@ -56,6 +58,8 @@ public class Profile {
     private Set<Entity> drops;
     private Set<Player> damaged;
 
+    private List<Player> spectatingPlayers;
+    
     private boolean invulnerability;
     private boolean showPlayers;
     
@@ -72,6 +76,7 @@ public class Profile {
         this.unRankedLosses = new HashMap<Ladder, Integer>();
         this.projectiles = new HashSet<Entity>();
         this.drops = new HashSet<Entity>();
+        this.spectatingPlayers = new ArrayList<Player>();
         for (Ladder ladder : Ladder.getLadders()) {
             if (this.rank.containsKey(ladder)) continue;
             this.rank.put(ladder, ladder.getDefaultElo());
@@ -95,6 +100,8 @@ public class Profile {
         this.damaged = new HashSet<Player>();
         this.invulnerability = false;
         this.showPlayers = false;
+        this.inSpectator = false;
+        this.spectating = null;
         Profile.getProfiles().add(this);
     }
 
@@ -524,6 +531,40 @@ public class Profile {
 	public void setInvulnerability(boolean invulnerability) {
 		this.invulnerability = invulnerability;
 	}
+
+	public List<Player> getSpectatingPlayers() {
+		return spectatingPlayers;
+	}
+
+	public void setSpectatingPlayers(List<Player> spectatingPlayers) {
+		this.spectatingPlayers = spectatingPlayers;
+	}
+
+	public boolean isInSpectator() {
+		return inSpectator;
+	}
+
+	public void setInSpectator(boolean inSpectator) {
+		this.inSpectator = inSpectator;
+	}
+
+	public Player getSpectatingPlayer() {
+		return spectating;
+	}
+
+	public void setSpectating(Player spectating) {
+		this.spectating = spectating;
+	}
     
+	public void addSpectator(Player player) {
+		this.spectatingPlayers.add(player);
+	}
+	
+	public void removeSpectator(Player player) {
+		if (this.spectatingPlayers.contains(player)) {
+			this.spectatingPlayers.remove(player);
+		}
+	}
+	
 }
 

@@ -46,6 +46,10 @@ TabCompleter {
                 player.sendMessage(this.lf.getString("NOT_FOUND"));
                 return true;
             }
+            if (profile.isInSpectator()) {
+            	sender.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
+            	return true;
+            }
             Inventory inventory = this.duelPlayer(player, challenged);
             profile.setDuelInventory(inventory);
             profile.setDuelPlayer(challenged);
