@@ -3,13 +3,16 @@ package us.chiraq.practicepots.listeners;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import mkremins.fanciful.FancyMessage;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
 import us.chiraq.practicepots.Nanny;
+import us.chiraq.practicepots.commands.DuelCommand;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
+import us.chiraq.practicepots.game.Arena;
 import us.chiraq.practicepots.game.Ladder;
 import us.chiraq.practicepots.game.Team;
 import us.chiraq.practicepots.game.kit.Kit;
@@ -323,15 +326,50 @@ public class QueueListeners
           name = ChatColor.stripColor(name);
           
           Ladder ladder = Ladder.getLadder(name);
-          if (ladder != null)
+          if (ladder != null && (!player.hasPermission("practice.premium")))
           {
             player.closeInventory();
             challengedProfile.getDuelRequests().put(player, ladder);
             player.sendMessage(this.lf.getString("DUEL_COMMAND.REQUEST_SENT").replace("%PLAYER%", challenged.getName()));
             new FancyMessage(this.lf.getString("DUEL_COMMAND.REQUESTED").replace("%PLAYER%", player.getName()).replace("%LADDER%", ladder.getName())).command("/duel accept " + player.getName()).send(challenged);
             return;
+          } else {
+        	  profile.setSelected(ladder);
+        	  player.closeInventory();
+        	  player.openInventory(DuelCommand.arenaPlayer(player, challenged, ladder));
+        	  return;
           }
         }
+      }
+      if (e.getInventory().getTitle().equalsIgnoreCase(this.lf.getString("ARENA_COMMAND.INVENTORY_NAME")))
+      {
+    	  e.setCancelled(true);
+    	  ItemStack is = e.getCurrentItem();
+    	  if (is != null && is.getItemMeta() != null && is.getItemMeta().getDisplayName() != null)
+    	  {
+    		  Player challenged = profile.getDuelPlayer();
+              Profile challengedProfile = Profile.getProfile(challenged.getUniqueId());
+              String name = is.getItemMeta().getDisplayName();
+              name = ChatColor.stripColor(name);
+              
+              Ladder l = profile.getSelected();
+              
+              Arena a;
+              if (name.equalsIgnoreCase("random")) {
+            	  a = l.getArenas().get(new Random().nextInt(l.getArenas().size()));
+              } else {
+            	  a = Arena.getArena(name);
+              }
+              
+              profile.setArena(a);
+              
+              player.closeInventory();
+              
+              challengedProfile.getDuelRequests().put(player, l);
+              player.sendMessage(this.lf.getString("DUEL_COMMAND.REQUEST_SENT").replace("%PLAYER%", challenged.getName()));
+              new FancyMessage(this.lf.getString("DUEL_COMMAND.DONATOR_REQUESTED").replace("%PLAYER%", player.getName()).replace("%LADDER%", l.getName()).replace("%ARENA%", name)).command("/duel accept " + player.getName()).send(challenged);
+              return;
+    	  }
       }
       if ((e.getInventory().getTitle().equalsIgnoreCase(this.INVENTORY_TITLE1)) && (e.getCurrentItem() != null))
       {

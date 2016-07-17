@@ -57,8 +57,6 @@ public class Duel {
             ladder.getUnrankedQueue().remove((Object)player1);
             ladder.getUnrankedQueue().remove((Object)player2);
         }
-        //this.scoreboard1 = PlayerScoreboard.getScoreboard(player1);
-        //this.scoreboard2 = PlayerScoreboard.getScoreboard(player2);
         profile1.setDuel(this);
         profile2.setDuel(this);
         profile1.setInSpawn(false);
@@ -77,20 +75,7 @@ public class Duel {
         this.player2.teleport(this.arena.getSpawnLocations()[1]);
         this.player1.getInventory().clear();
         this.player2.getInventory().clear();
-        /*for (String information : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
-            if (information.contains("Duration") || information.contains("Warm")) {
-                if (information.contains("Duration")) {
-                    new Entry(information, this.scoreboard1).setText(information).setCountup(true).setTime(0.0).send();
-                    new Entry(information, this.scoreboard2).setText(information).setCountup(true).setTime(0.0).send();
-                    continue;
-                }
-                new Entry(information, this.scoreboard1).setText(information).setCountdown(true).setTime(5.0).send();
-                new Entry(information, this.scoreboard2).setText(information).setCountdown(true).setTime(5.0).send();
-                continue;
-            }
-            new Entry(information, this.scoreboard1).setText(information.replace("%OPPONENT%", this.player2.getName()).replace("%LADDER%", this.ladder.getName())).send();
-            new Entry(information, this.scoreboard2).setText(information.replace("%OPPONENT%", this.player1.getName()).replace("%LADDER%", this.ladder.getName())).send();
-        }*/
+        
         if (this.profile1.getKits(this.ladder).isEmpty()) {
             if (this.ladder.getKit() != null) {
                 this.ladder.getKit().apply(this.player1);

@@ -72,5 +72,7 @@ QUEUE:
 #//Ending ELO range for ranked queue
   UNRANKED_ATTEMPTS: 10 
 #//Unranked matchs before being able to play ranked.
+ARENA:
+  ROWS: 1
 SETTINGS:
   ROWS: 1  

@@ -3,6 +3,7 @@ package us.chiraq.practicepots.profile;
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
+import us.chiraq.practicepots.game.Arena;
 import us.chiraq.practicepots.game.Ladder;
 import us.chiraq.practicepots.game.Team;
 import us.chiraq.practicepots.game.fight.Duel;
@@ -59,6 +60,8 @@ public class Profile {
     private Set<Entity> projectiles;
     private Set<Entity> drops;
     private Set<Player> damaged;
+    private Ladder selected;
+    private Arena arena;
 
     private List<Player> spectatingPlayers;
     
@@ -105,6 +108,8 @@ public class Profile {
         this.inSpectator = false;
         this.setQueueCooldown(false);
         this.spectating = null;
+        this.selected = null;
+        this.arena = null;
         Profile.getProfiles().add(this);
     }
 
@@ -583,6 +588,26 @@ public class Profile {
 			p.sendMessage(ChatColor.RED + "The player you were spectating is no longer online!");
 		}
 		this.spectatingPlayers.clear();
+	}
+	
+	public Player getSpectating() {
+		return spectating;
+	}
+
+	public Ladder getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Ladder selected) {
+		this.selected = selected;
+	}
+
+	public Arena getArena() {
+		return arena;
+	}
+
+	public void setArena(Arena arena) {
+		this.arena = arena;
 	}
 	
 }

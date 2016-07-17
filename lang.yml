@@ -91,6 +91,7 @@ DUEL_COMMAND:
   ITEM_DISPLAYNAME: "&e%LADDER%"
   REQUEST_SENT: "&eDuel request sent to &a%PLAYER%&e."
   REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel. &7(Click to accept)"
+  DONATOR_REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel in the %ARENA% arena. &7(Click to accept)"
   NOT_VALID: "&cThat is not a valid duel request!"
 
 LADDER_COMMAND:
@@ -114,6 +115,7 @@ LADDER_COMMAND:
   LIST_COMMA_COLOR: YELLOW
 
 ARENA_COMMAND:
+  INVENTORY_NAME: "Arena Selection"
   USAGE:
     - "&c/arena <create/setloc1/setloc2/delete> (<id>)"
   NO_ARENAS: "&cThere are currently no arenas to display."
