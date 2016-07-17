@@ -92,9 +92,14 @@ implements Listener {
     @EventHandler
     public void onTalk(AsyncPlayerChatEvent e) {
         if (this.settingName.containsKey((Object)e.getPlayer())) {
+        	String message = e.getMessage();
+        	if (message.matches("[a-zA-Z]+")) {
             e.getPlayer().sendMessage(this.lf.getString("KIT_EDITOR.RENAMED").replace("%KIT%", this.settingName.get((Object)e.getPlayer()).getName()));
             this.settingName.get((Object)e.getPlayer()).setName(e.getMessage());
             this.settingName.remove((Object)e.getPlayer());
+        	} else {
+        		e.getPlayer().sendMessage(ChatColor.RED + "Your kit name can only contain alphabetic characters!");
+        	}
             e.setCancelled(true);
         }
     }

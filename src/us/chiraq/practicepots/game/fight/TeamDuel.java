@@ -18,6 +18,7 @@ import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -81,11 +82,27 @@ public class TeamDuel {
                 inventory.setItem(8, Items.builder().setMaterial(Material.BOOK).setName((Object)ChatColor.YELLOW + "Default " + this.ladder.getName() + " Kit").build());
                 player.openInventory(inventory);
             }
+            for (Player p : profile.getSpectatingPlayers()) {
+            	p.teleport(location);
+            	p.setGameMode(GameMode.CREATIVE);
+            	this.setUpSpectator(p);
+            }
             player.teleport(location);
             for (Player team1PlayerHidden1 : team.getMembers()) {
                 player.showPlayer(team1PlayerHidden1);
             }
-            //team.resetScoreboard(player);
+            
+            new BukkitRunnable() {
+            	
+    			public void run() {
+    	            for (Player p : profile.getSpectatingPlayers()) {
+    	            	p.teleport(location);
+    	            	p.setGameMode(GameMode.CREATIVE);
+    	            	TeamDuel.this.setUpSpectator(p);
+    	            }
+    			}
+            	
+            }.runTaskLaterAsynchronously(main, 5L);
         }
     }
 
@@ -109,36 +126,8 @@ public class TeamDuel {
         }
     }
 
-    /*private void setupScoreboard() {
-        for (PlayerScoreboard scoreboard2 : this.team1.getScoreboards()) {
-            for (String information : this.lf.getStringList("SCOREBOARD.TEAM_FIGHT_INFORMATION")) {
-                if (information.contains("Duration") || information.contains("Warm")) {
-                    if (information.contains("Duration")) {
-                        new Entry(information, scoreboard2).setText(information).setCountup(true).setTime(0.0).send();
-                        continue;
-                    }
-                    new Entry(information, scoreboard2).setText(information).setCountdown(true).setTime(5.0).send();
-                    continue;
-                }
-                new Entry(information, scoreboard2).setText(information.replace("%FRIENDLYCOUNT%", "" + this.team1Left + "").replace("%ENEMYCOUNT%", "" + this.team2Left + "").replace("%LADDER%", this.ladder.getName())).send();
-            }
-        }
-        for (PlayerScoreboard scoreboard2 : this.team2.getScoreboards()) {
-            for (String information : this.lf.getStringList("SCOREBOARD.TEAM_FIGHT_INFORMATION")) {
-                if (information.contains("Duration") || information.contains("Warm")) {
-                    if (information.contains("Duration")) {
-                        new Entry(information, scoreboard2).setText(information).setCountup(true).setTime(0.0).send();
-                        continue;
-                    }
-                    new Entry(information, scoreboard2).setText(information).setCountdown(true).setTime(5.0).send();
-                    continue;
-                }
-                new Entry(information, scoreboard2).setText(information.replace("%FRIENDLYCOUNT%", "" + this.team2Left + "").replace("%ENEMYCOUNT%", "" + this.team1Left + "").replace("%LADDER%", this.ladder.getName())).send();
-            }
-        }
-    }*/
-
     public void setWinner(final Team team) {
+    	sendBackSpectators();
         this.team1.setInFight(false);
         this.team2.setInFight(false);
         this.team1.setDuel(null);
@@ -157,6 +146,7 @@ public class TeamDuel {
         if (this.task != null) {
             this.task.cancel();
         }
+        
         new BukkitRunnable(){
 
             public void run() {
@@ -174,7 +164,7 @@ public class TeamDuel {
         this.countdown = true;
         this.setupTeam(this.team1, this.arena.getSpawnLocations()[0]);
         this.setupTeam(this.team2, this.arena.getSpawnLocations()[1]);
-        //this.setupScoreboard();
+
         for (int i = 0; i < 6; ++i) {
             final int finalI = i;
             new BukkitRunnable(){
@@ -193,44 +183,29 @@ public class TeamDuel {
                     TeamDuel.this.started = true;
                 }
             }.runTaskLater((Plugin)this.main, (long)(20 * i));
-            /*this.task = new BukkitRunnable(){
-
-                public void run() {
-                    int amount;
-                    Profile profile;
-                    for (PlayerScoreboard scoreboard2 : TeamDuel.this.team1.getScoreboards()) {
-                        profile = Profile.getProfile(scoreboard2.getPlayer().getUniqueId());
-                        if (profile.isInSpawn()) continue;
-                        for (Entry entry : scoreboard2.getEntries()) {
-                            if (entry.getId().contains("Enemies alive")) {
-                                amount = Integer.parseInt(ChatColor.stripColor((String)entry.getText().substring(entry.getText().lastIndexOf(" ", entry.getText().length()))).replace(" ", ""));
-                                if (amount == TeamDuel.this.team2Left) continue;
-                                entry.setText(entry.getText().substring(0, entry.getText().length() - 1) + TeamDuel.this.team2Left).send();
-                                continue;
-                            }
-                            if (!entry.getId().contains("Friendlies") || (amount = Integer.parseInt(ChatColor.stripColor((String)entry.getText().substring(entry.getText().lastIndexOf(" ", entry.getText().length()))).replace(" ", ""))) == TeamDuel.this.team1Left) continue;
-                            entry.setText(entry.getText().substring(0, entry.getText().length() - 1) + TeamDuel.this.team1Left).send();
-                        }
-                    }
-                    for (PlayerScoreboard scoreboard2 : TeamDuel.this.team2.getScoreboards()) {
-                        profile = Profile.getProfile(scoreboard2.getPlayer().getUniqueId());
-                        if (profile.isInSpawn()) continue;
-                        for (Entry entry : scoreboard2.getEntries()) {
-                            if (entry.getId().contains("Enemies alive")) {
-                                amount = Integer.parseInt(ChatColor.stripColor((String)entry.getText().substring(entry.getText().lastIndexOf(" ", entry.getText().length()))).replace(" ", ""));
-                                if (amount == TeamDuel.this.team1Left) continue;
-                                entry.setText(entry.getText().substring(0, entry.getText().length() - 1) + TeamDuel.this.team1Left).send();
-                                continue;
-                            }
-                            if (!entry.getId().contains("Friendlies") || (amount = Integer.parseInt(ChatColor.stripColor((String)entry.getText().substring(entry.getText().lastIndexOf(" ", entry.getText().length()))).replace(" ", ""))) == TeamDuel.this.team2Left) continue;
-                            entry.setText(entry.getText().substring(0, entry.getText().length() - 1) + TeamDuel.this.team2Left).send();
-                        }
-                    }
-                }
-            }.runTaskTimer((Plugin)this.main, 2, 2); */
         }
     }
 
+    public void setUpSpectator(Player player) {
+    	for (Player p : getAllPlayers()) {
+    		player.showPlayer(p);
+    		Nanny.getInstance().getProfileManager().forceUpdateEntity(p, player);
+    	}
+    }
+    
+    public void sendBackSpectators() {
+    	for (Profile p : team1.getProfiles()) {
+    		for (Player pl : p.getSpectatingPlayers()) {
+    			main.getProfileManager().sendToSpawn(pl);
+    		}
+    	}
+    	for (Profile p : team2.getProfiles()) {
+    		for (Player pl : p.getSpectatingPlayers()) {
+    			main.getProfileManager().sendToSpawn(pl);
+    		}
+    	}
+    }
+    
     public List<Player> getAllPlayers() {
         ArrayList<Player> players = new ArrayList<Player>();
         players.addAll(this.team1.getMembers());

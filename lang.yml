@@ -46,15 +46,13 @@ STATS:
 TEAM:
   DELETED: "&cThe team was deleted by the owner."
   LEFT: "&c%PLAYER% left the team."
-  LIST:
-    - "&eTeam members&7:"
-    - "&e%PLAYERS%"
+  LIST: "&eTeam members&7:"
   GUI:
     NEXT_PAGE: "&e» &6Page #%PAGE%"
     ITEM_NAME: "&e%PLAYER%'s team"
     ITEM_LORE: "&6%PLAYER%"
   FINISH:
-   WINNER: "&eWinner: %WINNER%"
+   WINNER: "&eWinner: %WINNER%'s Team"
    INVENTORY_VIEW: "&6Inventories (click to view):&e "
   DUEL_SENT: "&eSent duel request for &b%LADDER%&e to &a%PLAYER%&e."
   DUEL_RECEIVED: "&eDuel request for &b%LADDER%&e received from &a%PLAYER%&e."

@@ -68,12 +68,7 @@ implements Listener {
             while (n2 < n) {
                 final Player online = arrplayer[n2];
                 if (online != duel.getPlayer1() && online != duel.getPlayer2()) {
-                    new BukkitRunnable(){
-
-                        public void run() {
-                            ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
-                        }
-                    }.runTaskLater((Plugin)this.main, 1);
+                	((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
                 }
                 ++n2;
             }
@@ -94,12 +89,7 @@ implements Listener {
         while (all < n) {
             final Player online = teamDuel[all];
             if (online != player) {
-                new BukkitRunnable(){
-
-                    public void run() {
-                        ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
-                    }
-                }.runTaskLater((Plugin)this.main, 1);
+                ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
             }
             ++all;
         }
@@ -116,12 +106,7 @@ implements Listener {
             duel.getProfile2().getDrops().add((Entity)e.getItemDrop());
             for (final Player online : Bukkit.getOnlinePlayers()) {
                 if (online == duel.getPlayer1() || online == duel.getPlayer2()) continue;
-                new BukkitRunnable(){
-
-                    public void run() {
-                        ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
-                    }
-                }.runTaskLater((Plugin)this.main, 1);
+                    ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
             }
         } else {
             if (profile.getTeam() != null && profile.getTeam().isInFight() && profile.getTeam().getDuel() != null) {
@@ -131,22 +116,12 @@ implements Listener {
                 }
                 for (final Player online : Bukkit.getOnlinePlayers()) {
                     if (profile.getTeam().getDuel().getAllPlayers().contains((Object)online)) continue;
-                    new BukkitRunnable(){
-
-                        public void run() {
-                            ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
-                        }
-                    }.runTaskLater((Plugin)this.main, 1);
+                        ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
                 }
             }
             for (final Player online : Bukkit.getOnlinePlayers()) {
                 if (online == player) continue;
-                new BukkitRunnable(){
-
-                    public void run() {
-                        ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
-                    }
-                }.runTaskLater((Plugin)this.main, 1);
+                    ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getItemDrop().getEntityId()}));
             }
         }
     }
@@ -209,6 +184,7 @@ implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         Profile profile = Profile.getProfile(player.getUniqueId());
+        profile.setQueueCooldown(false);
         new InventorySave(player);
         if (profile.isInSpectator()) {
         	profile.setInSpectator(false);
@@ -240,6 +216,12 @@ implements Listener {
             }
             return;
         }
+        if (profile.isInSpectator()) {
+        	Profile.getProfile(profile.getSpectatingPlayer().getUniqueId()).removeSpectator(player);
+        	profile.setSpectating(null);
+        	profile.setInSpectator(true);
+        }
+        profile.clearSpectators();
         if (profile.getDuel() != null) {
             Duel duel = profile.getDuel();
             duel.getProfile1().setInArena(false);
@@ -248,15 +230,6 @@ implements Listener {
             duel.getProfile2().setInSpawn(true);
             final Player otherPlayer = duel.getPlayer1() != player ? duel.getPlayer1() : duel.getPlayer2();
             Profile otherProfile = Profile.getProfile(otherPlayer.getUniqueId());
-            //PlayerScoreboard scoreboard1 = duel.getScoreboard1();
-            //PlayerScoreboard scoreboard2 = duel.getScoreboard2();
-            /*for (String string : this.lf.getStringList("SCOREBOARD.MATCH_INFORMATION")) {
-                if (scoreboard1.getEntry(string) != null) {
-                    scoreboard1.getEntry(string).setCancelled(true);
-                }
-                if (scoreboard2.getEntry(string) == null) continue;
-                scoreboard2.getEntry(string).setCancelled(true);
-            }*/
             new InventorySave(otherPlayer);
             if (duel.getRanked() == 0) {
                 int otherElo = otherProfile.getRank().get(duel.getLadder());
@@ -424,6 +397,10 @@ implements Listener {
             profile.getRank().put(duel.getLadder(), Integer.valueOf(results[1]));
             otherProfile.getRank().put(duel.getLadder(), Integer.valueOf(results[0]));
             proccessStats(otherProfile, profile, duel, true);
+        } else if (duel.getRanked() == 1) {
+            profile.getUnRankedLosses().put(duel.getLadder(), profile.getUnRankedLosses().get(duel.getLadder()) + 1);
+            otherProfile.getUnRankedWins().put(duel.getLadder(), otherProfile.getUnRankedWins().get(duel.getLadder()) + 1);
+        	proccessStats(otherProfile, profile, duel, false);
         }
         player.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
         otherPlayer.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
@@ -526,6 +503,16 @@ implements Listener {
     		player.setGameMode(GameMode.SURVIVAL);
     		DuelListeners.this.pm.sendToSpawn(player);
     	}
+    	
+    	winner.setQueueCooldown(true);
+    	loser.setQueueCooldown(true);
+    	
+    	new BukkitRunnable() {
+    		public void run() {
+    	    	winner.setQueueCooldown(false);
+    	    	loser.setQueueCooldown(false);
+    		}
+    	}.runTaskLater(main, 40L);
     }
     
 }

@@ -130,28 +130,54 @@ public class Duel {
     	player1.showPlayer(player2);
     	player2.showPlayer(player1);
 
-    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
-    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
-    	
     	for (Player p1 : profile1.getSpectatingPlayers()) {
     		p1.showPlayer(player1);
     		p1.showPlayer(player2);
+            Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
+            Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
+        	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+        	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
     		p1.teleport(player1);
-    		p1.setGameMode(GameMode.CREATIVE);
     	}
     	
     	for (Player p2 : profile2.getSpectatingPlayers()) {
     		p2.showPlayer(player1);
     		p2.showPlayer(player2);
+            Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
+            Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
+        	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+        	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
     		p2.teleport(player2);
-    		p2.setGameMode(GameMode.CREATIVE);
     	}
+    	
+    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+    	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
     	
         this.profile1.setInvulnerability(true);
         this.profile2.setInvulnerability(true);
         
         new BukkitRunnable() {
         	public void run() {
+            	for (Player p1 : profile1.getSpectatingPlayers()) {
+            		p1.showPlayer(player1);
+            		p1.showPlayer(player2);
+                    Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
+                    Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
+                	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+                	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
+            		p1.setGameMode(GameMode.CREATIVE);
+            	}
+            	
+            	for (Player p2 : profile2.getSpectatingPlayers()) {
+            		p2.showPlayer(player1);
+            		p2.showPlayer(player2);
+                    Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
+                    Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
+                	Nanny.getInstance().getProfileManager().forceUpdateEntity(player1, player2);
+                	Nanny.getInstance().getProfileManager().forceUpdateEntity(player2, player1);
+            		p2.setGameMode(GameMode.CREATIVE);
+            	}
+        		
                 Nanny.getInstance().getProfileManager().showPlayer(player1, player2);
                 Nanny.getInstance().getProfileManager().showPlayer(player2, player1);
                 

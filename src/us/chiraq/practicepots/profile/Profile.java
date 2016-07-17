@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -42,6 +43,7 @@ public class Profile {
     private boolean inArena;
     private boolean inKitEditor;
     private boolean inSpectator;
+    private boolean queueCooldown;
     private Player spectating;
     private Ladder searchingLadder;
     private int searchingRange;
@@ -101,6 +103,7 @@ public class Profile {
         this.invulnerability = false;
         this.showPlayers = false;
         this.inSpectator = false;
+        this.setQueueCooldown(false);
         this.spectating = null;
         Profile.getProfiles().add(this);
     }
@@ -533,7 +536,7 @@ public class Profile {
 	}
 
 	public List<Player> getSpectatingPlayers() {
-		return spectatingPlayers;
+		return this.spectatingPlayers;
 	}
 
 	public void setSpectatingPlayers(List<Player> spectatingPlayers) {
@@ -564,6 +567,22 @@ public class Profile {
 		if (this.spectatingPlayers.contains(player)) {
 			this.spectatingPlayers.remove(player);
 		}
+	}
+
+	public boolean isQueueCooldown() {
+		return queueCooldown;
+	}
+
+	public void setQueueCooldown(boolean queueCooldown) {
+		this.queueCooldown = queueCooldown;
+	}
+	
+	public void clearSpectators() {
+		for (Player p : this.getSpectatingPlayers()) {
+			Nanny.getInstance().getProfileManager().sendToSpawn(p);
+			p.sendMessage(ChatColor.RED + "The player you were spectating is no longer online!");
+		}
+		this.spectatingPlayers.clear();
 	}
 	
 }

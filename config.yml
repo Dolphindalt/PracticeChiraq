@@ -57,6 +57,10 @@ SPECTATOR_HOTBAR_ITEMS:
     DISPLAYNAME: "&eLeave Spectator Mode"
     LORE:
       - "Lore"
+  PAPER:
+    DISPLAYNAME: "&eSpectate Random Player"
+    LORE:
+      - "Lore"
 QUEUE:
 #//How many rows in the queue GUI
   ROWS: 1 

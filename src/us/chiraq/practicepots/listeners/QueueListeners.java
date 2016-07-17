@@ -2,7 +2,6 @@ package us.chiraq.practicepots.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import mkremins.fanciful.FancyMessage;
@@ -120,7 +119,7 @@ public class QueueListeners
       }
     }
     
-      .runTaskTimerAsynchronously(this.main, 1L, 1L);
+      .runTaskTimerAsynchronously(this.main, 1L, 5L);
   }
   
   @EventHandler
@@ -198,7 +197,7 @@ public class QueueListeners
     		  itemStack.getItemMeta().setLore(Arrays.asList(this.lf.getString("SETTINGS.ENDERPEARL.LORE").replace("%VALUE%", profile.isShowPlayers() + "")));
     		  player.updateInventory();
     		  showSettingsInventory(player, profile);
-    		  player.sendMessage(this.lf.getString("SETTINGS.MESSAGES.PLAYER_VISABILITY").replace("%VALUE%", profile.isShowPlayers() + ""));
+    		  player.sendMessage(this.lf.getString("SETTINGS.MESSAGES.PLAYER_VISIBILITY").replace("%VALUE%", profile.isShowPlayers() + ""));
     	  }
     	  return;
       }
@@ -414,20 +413,14 @@ public class QueueListeners
       Profile profile = Profile.getProfile(player.getUniqueId());
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.NETHER_STAR && profile.isInSpawn() && profile.getTeam() != null) {
           e.setCancelled(true);
-          Iterator<String> iterator = this.lf.getStringList("TEAM.LIST").iterator();
-          while (iterator.hasNext()) {
-              Object string = iterator.next();
-              if (((String) string).contains("%PLAYERS%")) 
-                    {
-                  String members = "";
-                  for (Player teamMember : profile.getTeam().getMembers()) {
-                      members = members + ChatColor.getLastColors((String) string) + teamMember.getName() + "\n";
-                  }
-                  string = ((String) string).replace("%PLAYERS%", members);
-              }
-              player.sendMessage((String)string);
-              return;
+          Team team = profile.getTeam();
+          player.sendMessage(this.lf.getString("TEAM.LIST"));
+          for (Player p : team.getMembers()) {
+        	  if (team.getLeader().equals(p)) {
+        		  player.sendMessage(ChatColor.BOLD.toString() + ChatColor.YELLOW + p.getName());
+        	  } else player.sendMessage(ChatColor.YELLOW + p.getName());
           }
+          return;
       }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.NAME_TAG) {
           e.setCancelled(true);
@@ -458,7 +451,6 @@ public class QueueListeners
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.SKULL_ITEM) {
           e.setCancelled(true);
           if (profile.isInSpectator()) {
-        	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
         	  return;
           }
           if (profile.isInSpawn()) {
@@ -497,6 +489,12 @@ public class QueueListeners
               return;
           }
       }
+      if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.PAPER && profile.isInSpectator()) {
+    	  Profile dueler = pm.getRandomDuelingProfile(player);
+    	  if (dueler == null) return;
+    	  pm.spectatePlayer(Bukkit.getPlayer(dueler.getUuid()), player, dueler, profile);
+    	  return;
+      }
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.BOOK && profile.isInSpawn()) {
           e.setCancelled(true);
           if (profile.isInSpectator()) {
@@ -523,9 +521,10 @@ public class QueueListeners
             	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
             	  return;
               }
-    	      {
-    	        player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE1));
-    	      }
+              if (profile.isQueueCooldown()) {
+            	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
+              }
+    	      player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE1));
     	    }
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.IRON_SWORD) && (profile.isInSpawn()))
       {
@@ -534,9 +533,10 @@ public class QueueListeners
         	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
         	  return;
           }
-    	  {
-    		  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE2));
-    	  }
+          if (profile.isQueueCooldown()) {
+        	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
+          }
+    	  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE2));
     	  return;
       }
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.GOLD_SWORD) && (profile.isInSpawn()))
@@ -551,9 +551,10 @@ public class QueueListeners
         	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
         	  return;
           }
-    	  {
-    		  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE3));
-    	  }
+          if (profile.isQueueCooldown()) {
+        	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
+          }
+    	  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE3));
       }
     	      else if (e.getItem() != null) {
     	    	  if (e.getItem().getType() != Material.AIR) {

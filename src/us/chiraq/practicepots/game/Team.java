@@ -39,25 +39,7 @@ public class Team {
         this.profiles = new HashSet<Profile>();
         this.challenges = new HashMap<Team, Ladder>();
         this.addPlayer(leader);
-        /*this.task = new BukkitRunnable(){
 
-            public void run() {
-                for (Player player : Team.this.members) {
-                    PlayerScoreboard playerScoreboard = PlayerScoreboard.getScoreboard(player);
-                    Profile profile = Profile.getProfile(player.getUniqueId());
-                    if (!profile.isInSpawn()) continue;
-                    for (String string : Team.this.lf.getStringList("SCOREBOARD.TEAM_INFORMATION")) {
-                        Entry entry = playerScoreboard.getEntry(string);
-                        if (entry != null) {
-                            if (!entry.getText().contains("Size") || entry.getText().endsWith("" + Team.this.members.size() + "") || !string.contains("%SIZE%")) continue;
-                            entry.setText(string.replace("%SIZE%", "" + Team.this.members.size() + ""));
-                            continue;
-                        }
-                        new Entry(string, playerScoreboard).setText(string.replace("%SIZE%", "" + Team.this.members.size() + "").replace("%LEADER%", leader.getName())).setCountdown(false).send();
-                    }
-                }
-            }
-        }.runTaskTimer((Plugin)this.main, 0, 2);*/
         Team.getTeams().add(this);
     }
 
