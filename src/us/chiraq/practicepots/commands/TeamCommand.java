@@ -51,7 +51,11 @@ TabCompleter {
                 if (otherTeam != null && otherTeam.getChallengingTeam() == team && team.getChallenges().containsKey(otherTeam)) {
                     Ladder ladder = team.getChallenges().get(otherTeam);
                     if (!otherTeam.isInFight()) {
-                        new TeamDuel(team, otherTeam, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())));
+                    	if (!Bukkit.getPlayer(profile.getUuid()).hasPermission("practice.premium")) {
+                    		new TeamDuel(team, otherTeam, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())));
+                    	} else {
+                    		new TeamDuel(team, otherTeam, profile.getSelected(), profile.getArena());
+                    	}
                         return true;
                     }
                 }

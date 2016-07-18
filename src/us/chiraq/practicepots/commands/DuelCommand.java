@@ -127,7 +127,7 @@ TabCompleter {
         return inventory;
     }
     
-    public static Inventory arenaPlayer(Player player, Player challenged, Ladder ladder) {
+    public static Inventory arenaPlayer(Player player, Ladder ladder) {
     	Inventory inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * cf.getInt("ARENA.ROWS")), (String)lf.getString("ARENA_COMMAND.INVENTORY_NAME"));
     	ItemStack r = Items.builder().setMaterial(Material.MAP).setName(ChatColor.GREEN + "Random").setLore(ChatColor.DARK_PURPLE + "Click here to choose a random arena").build();
     	inventory.addItem(r);

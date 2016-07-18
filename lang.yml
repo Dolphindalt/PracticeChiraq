@@ -56,6 +56,7 @@ TEAM:
    INVENTORY_VIEW: "&6Inventories (click to view):&e "
   DUEL_SENT: "&eSent duel request for &b%LADDER%&e to &a%PLAYER%&e."
   DUEL_RECEIVED: "&eDuel request for &b%LADDER%&e received from &a%PLAYER%&e."
+  DONATOR_DUEL_RECEIVED: "&eDuel request for &b%LADDER%&e received from &a%PLAYER%&e in the &4%ARENA% &earena!"
   NOT_BIG_ENOUGH: "&cYou need two or more people in your team to duel!"
 TEAM_COMMAND:
   USAGE:
@@ -91,7 +92,7 @@ DUEL_COMMAND:
   ITEM_DISPLAYNAME: "&e%LADDER%"
   REQUEST_SENT: "&eDuel request sent to &a%PLAYER%&e."
   REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel. &7(Click to accept)"
-  DONATOR_REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel in the %ARENA% arena. &7(Click to accept)"
+  DONATOR_REQUESTED: "&a%PLAYER%&e challenged you to a &b%LADDER%&e duel in the &4%ARENA% &earena. &7(Click to accept)"
   NOT_VALID: "&cThat is not a valid duel request!"
 
 LADDER_COMMAND:

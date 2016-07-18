@@ -250,8 +250,6 @@ implements Listener {
                 profile.getRankedLosses().put(duel.getLadder(), profile.getRankedLosses().get(duel.getLadder()) + 1);
                 proccessStats(otherProfile, profile, duel, true);
             } else if (duel.getRanked() == 1) {
-                profile.getUnRankedLosses().put(duel.getLadder(), profile.getUnRankedLosses().get(duel.getLadder()) + 1);
-                otherProfile.getUnRankedWins().put(duel.getLadder(), otherProfile.getUnRankedWins().get(duel.getLadder()) + 1);
                 proccessStats(otherProfile, profile, duel, false);
             }
             player.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
@@ -398,8 +396,6 @@ implements Listener {
             otherProfile.getRank().put(duel.getLadder(), Integer.valueOf(results[0]));
             proccessStats(otherProfile, profile, duel, true);
         } else if (duel.getRanked() == 1) {
-            profile.getUnRankedLosses().put(duel.getLadder(), profile.getUnRankedLosses().get(duel.getLadder()) + 1);
-            otherProfile.getUnRankedWins().put(duel.getLadder(), otherProfile.getUnRankedWins().get(duel.getLadder()) + 1);
         	proccessStats(otherProfile, profile, duel, false);
         }
         player.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));

@@ -166,9 +166,15 @@ public class QueueListeners
           name = name.replace(" ", "");
           
           Ladder ladder = Ladder.getLadder(name);
+          
           challengingTeam = profile.getTeam().getChallengingTeam();
           if ((challengingTeam != null) && (ladder != null))
           {
+        	  if (player.hasPermission("practice.premium")) {
+        		  profile.setSelected(ladder);
+        		  DuelCommand.arenaPlayer(player, ladder);
+        		  return;
+        	  }
             challengingTeam.getChallenges().put(profile.getTeam(), ladder);
             for (Player challenge : challengingTeam.getMembers()) {
               if (challenge != challengingTeam.getLeader()) {
@@ -176,7 +182,7 @@ public class QueueListeners
               } else {
                 new FancyMessage(this.lf.getString("TEAM.DUEL_RECEIVED").replace("%PLAYER%", player.getName()).replace("%LADDER%", ladder.getName())).command("/team accept " + player.getName()).send(challenge);
               }
-            }
+            }        
             profile.getTeam().sendMessage(this.lf.getString("TEAM.DUEL_SENT").replace("%PLAYER%", challengingTeam.getLeader().getName()).replace("%LADDER%", ladder.getName()));
           }
           player.closeInventory();
@@ -244,13 +250,7 @@ public class QueueListeners
             if (profile.getTeam().getLeader().getName().equalsIgnoreCase(player.getName()))
             {
               profile.getTeam().setChallengingTeam(team);
-              Inventory inventory = Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), "Duel a team");
-              for (Ladder ladder : Ladder.getLadders())
-              {
-                ItemStack itemToSet = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("KIT_EDITOR.ITEM_DISPLAYNAME").replace("%LADDER%", ladder.getName())).build();
-                inventory.addItem(new ItemStack[] { itemToSet });
-              }
-              player.openInventory(inventory);
+              createDuelATeam(player);
               return;
             }
           }
@@ -336,7 +336,7 @@ public class QueueListeners
           } else {
         	  profile.setSelected(ladder);
         	  player.closeInventory();
-        	  player.openInventory(DuelCommand.arenaPlayer(player, challenged, ladder));
+        	  player.openInventory(DuelCommand.arenaPlayer(player, ladder));
         	  return;
           }
         }
@@ -347,28 +347,60 @@ public class QueueListeners
     	  ItemStack is = e.getCurrentItem();
     	  if (is != null && is.getItemMeta() != null && is.getItemMeta().getDisplayName() != null)
     	  {
-    		  Player challenged = profile.getDuelPlayer();
-              Profile challengedProfile = Profile.getProfile(challenged.getUniqueId());
-              String name = is.getItemMeta().getDisplayName();
-              name = ChatColor.stripColor(name);
+    		  if (!(profile.getTeam() != null)) {
+    			  Player challenged = profile.getDuelPlayer();
+    			  Profile challengedProfile = Profile.getProfile(challenged.getUniqueId());
+    			  String name = is.getItemMeta().getDisplayName();
+    			  name = ChatColor.stripColor(name);
               
-              Ladder l = profile.getSelected();
+    			  Ladder l = profile.getSelected();
               
-              Arena a;
-              if (name.equalsIgnoreCase("random")) {
-            	  a = l.getArenas().get(new Random().nextInt(l.getArenas().size()));
-              } else {
-            	  a = Arena.getArena(name);
-              }
+    			  Arena a;
+    			  if (name.equalsIgnoreCase("random")) {
+    				  a = l.getArenas().get(new Random().nextInt(l.getArenas().size()));
+    			  } else {
+    				  a = Arena.getArena(name);
+    			  }
               
-              profile.setArena(a);
+    			  profile.setArena(a);
               
-              player.closeInventory();
+    			  player.closeInventory();
               
-              challengedProfile.getDuelRequests().put(player, l);
-              player.sendMessage(this.lf.getString("DUEL_COMMAND.REQUEST_SENT").replace("%PLAYER%", challenged.getName()));
-              new FancyMessage(this.lf.getString("DUEL_COMMAND.DONATOR_REQUESTED").replace("%PLAYER%", player.getName()).replace("%LADDER%", l.getName()).replace("%ARENA%", name)).command("/duel accept " + player.getName()).send(challenged);
-              return;
+    			  challengedProfile.getDuelRequests().put(player, l);
+    			  player.sendMessage(this.lf.getString("DUEL_COMMAND.REQUEST_SENT").replace("%PLAYER%", challenged.getName()));
+    			  new FancyMessage(this.lf.getString("DUEL_COMMAND.DONATOR_REQUESTED").replace("%PLAYER%", player.getName()).replace("%LADDER%", l.getName()).replace("%ARENA%", name)).command("/duel accept " + player.getName()).send(challenged);
+    			  return;
+    		  } else {
+    			  Team challengingTeam;
+    			  challengingTeam = profile.getTeam().getChallengingTeam();
+    			  
+    			  String name = is.getItemMeta().getDisplayName();
+    			  name = ChatColor.stripColor(name);
+    			  
+    			  Ladder l = profile.getSelected();
+    			  
+    			  Arena a;
+    			  if (name.equalsIgnoreCase("random")) {
+    				  a = l.getArenas().get(new Random().nextInt(l.getArenas().size()));
+    			  } else {
+    				  a = Arena.getArena(name);
+    			  }
+              
+    			  profile.setArena(a);
+    			  
+    			  challengingTeam.getChallenges().put(profile.getTeam(), l);
+    	            for (Player challenge : challengingTeam.getMembers()) {
+    	              if (challenge != challengingTeam.getLeader()) {
+    	                challenge.sendMessage(this.lf.getString("TEAM.DUEL_RECEIVED").replace("%PLAYER%", player.getName()).replace("%LADDER%", l.getName()));
+    	              } else {
+    	                new FancyMessage(this.lf.getString("TEAM.DONATOR_DUEL_RECEIVED").replace("%PLAYER%", player.getName()).replace("%LADDER%", l.getName())).command("/team accept " + player.getName()).send(challenge);
+    	              }
+    	            }
+    	            profile.getTeam().sendMessage(this.lf.getString("TEAM.DUEL_SENT").replace("%PLAYER%", challengingTeam.getLeader().getName()).replace("%LADDER%", l.getName()));
+    	          }
+    	          player.closeInventory();
+    		  }
+    		  return;
     	  }
       }
       if ((e.getInventory().getTitle().equalsIgnoreCase(this.INVENTORY_TITLE1)) && (e.getCurrentItem() != null))
@@ -442,7 +474,6 @@ public class QueueListeners
         }
       }
     }
-  }
   
   @EventHandler
   public void onInteract(PlayerInteractEvent e) {
@@ -657,6 +688,16 @@ public class QueueListeners
 			  .setLore(this.lf.getString("SETTINGS.ENDERPEARL.LORE").replace("%VALUE%", profile.isShowPlayers() + "")).build();
 	  inventory.addItem(new ItemStack[]{itemStack});
 	  player.openInventory(inventory);
+  }
+  
+  public void createDuelATeam(Player player) {
+      Inventory inventory = Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), "Duel a team");
+      for (Ladder ladder : Ladder.getLadders())
+      {
+        ItemStack itemToSet = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("KIT_EDITOR.ITEM_DISPLAYNAME").replace("%LADDER%", ladder.getName())).build();
+        inventory.addItem(new ItemStack[] { itemToSet });
+      }
+      player.openInventory(inventory);
   }
   
 }
