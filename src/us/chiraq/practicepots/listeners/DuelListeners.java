@@ -28,6 +28,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -53,7 +54,7 @@ implements Listener {
      * Lifted jumps to return sites
      */
     @SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onDrop(final ProjectileLaunchEvent e) {
         if (!(e.getEntity().getShooter() instanceof Player)) return;
         Player player = (Player)e.getEntity().getShooter();
@@ -94,9 +95,9 @@ implements Listener {
             ++all;
         }
     }
-
+    
     @SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onDrop(final PlayerDropItemEvent e) {
         Player player = e.getPlayer();
         Profile profile = Profile.getProfile(player.getUniqueId());
@@ -127,7 +128,7 @@ implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onSplash(PotionSplashEvent e) {
         if (e.getEntity().getShooter() instanceof Player) {
             Player player = (Player)e.getEntity().getShooter();
@@ -239,7 +240,7 @@ implements Listener {
                 player.sendMessage(this.lf.getString("QUEUE.SEARCH.RANKED.ELO_CHANGE").replace("%WINNER%", otherPlayer.getName()).replace("%WINNER_ELO%", "" + results[0] + "").replace("%WINNER_AMOUNT%", "" + (results[0] - otherElo) + "").replace("%LOSER%", player.getName()).replace("%LOSER_ELO%", "" + results[1] + "").replace("%LOSER_AMOUNT%", "" + (elo - results[1]) + ""));
                 profile.getRank().put(duel.getLadder(), results[1]);
                 otherProfile.getRank().put(duel.getLadder(), results[0]);
-                proccessStats(otherProfile, profile, duel, true);
+                proccessStats(otherProfile, profile, duel, 1);
             } else if (duel.getRanked() == 2) {
                 int otherElo = otherProfile.getRank().get(duel.getLadder());
                 int elo = profile.getRank().get(duel.getLadder());
@@ -248,9 +249,9 @@ implements Listener {
                 player.sendMessage(this.lf.getString("QUEUE.SEARCH.PREMIUMRANKED.ELO_CHANGE").replace("%WINNER%", otherPlayer.getName()).replace("%WINNER_ELO%", "" + results[0] + "").replace("%WINNER_AMOUNT%", "" + (results[0] - otherElo) + "").replace("%LOSER%", player.getName()).replace("%LOSER_ELO%", "" + results[1] + "").replace("%LOSER_AMOUNT%", "" + (elo - results[1]) + ""));
                 profile.getRank().put(duel.getLadder(), results[1]);
                 profile.getRankedLosses().put(duel.getLadder(), profile.getRankedLosses().get(duel.getLadder()) + 1);
-                proccessStats(otherProfile, profile, duel, true);
+                proccessStats(otherProfile, profile, duel, 2);
             } else if (duel.getRanked() == 1) {
-                proccessStats(otherProfile, profile, duel, false);
+                proccessStats(otherProfile, profile, duel, 3);
             }
             player.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
             otherPlayer.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
@@ -368,7 +369,7 @@ implements Listener {
           
           profile.getRank().put(duel.getLadder(), Integer.valueOf(results[1]));
           otherProfile.getRank().put(duel.getLadder(), Integer.valueOf(results[0]));
-          proccessStats(otherProfile, profile, duel, true);
+          proccessStats(otherProfile, profile, duel, 1);
         }
         else if (duel.getRanked() == 2)
         {
@@ -394,9 +395,9 @@ implements Listener {
             
             profile.getRank().put(duel.getLadder(), Integer.valueOf(results[1]));
             otherProfile.getRank().put(duel.getLadder(), Integer.valueOf(results[0]));
-            proccessStats(otherProfile, profile, duel, true);
+            proccessStats(otherProfile, profile, duel, 2);
         } else if (duel.getRanked() == 1) {
-        	proccessStats(otherProfile, profile, duel, false);
+        	proccessStats(otherProfile, profile, duel, 3);
         }
         player.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
         otherPlayer.sendMessage(this.lf.getString("QUEUE.FINISH.WINNER").replace("%WINNER%", otherPlayer.getName()));
@@ -476,17 +477,27 @@ implements Listener {
         }
     }
 
-    public void proccessStats(Profile winner, Profile loser, Duel duel, boolean ranked) {
-    	if (ranked) {
+    public void proccessStats(Profile winner, Profile loser, Duel duel, int type) {
+    	if (type == 1) {
         	loser.getRankedLosses().put(duel.getLadder(), loser.getRankedLosses().get(duel.getLadder()) + 1);
             winner.getRankedWins().put(duel.getLadder(), winner.getRankedWins().get(duel.getLadder()) + 1);
             winner.setGlobalElo(Data.calculateGlobalElo(winner));
             loser.setGlobalElo(Data.calculateGlobalElo(loser));
             Data.saveProfile(loser);
             Data.saveProfile(winner);
+        	duel.getLadder().setCurrentRankedMatches(duel.getLadder().getCurrentRankedMatches() - 1);
+    	} else if (type == 2) {
+        	loser.getRankedLosses().put(duel.getLadder(), loser.getRankedLosses().get(duel.getLadder()) + 1);
+            winner.getRankedWins().put(duel.getLadder(), winner.getRankedWins().get(duel.getLadder()) + 1);
+            winner.setGlobalElo(Data.calculateGlobalElo(winner));
+            loser.setGlobalElo(Data.calculateGlobalElo(loser));
+            Data.saveProfile(loser);
+            Data.saveProfile(winner);
+            duel.getLadder().setCurrentPremiumRankedMatches(duel.getLadder().getCurrentPremiumRankedMatches()-1);
     	} else {
     		loser.getUnRankedLosses().put(duel.getLadder(), loser.getUnRankedLosses().get(duel.getLadder()) + 1);
             winner.getUnRankedWins().put(duel.getLadder(), winner.getUnRankedWins().get(duel.getLadder()) + 1);
+            duel.getLadder().setCurrentUnRankedMatches(duel.getLadder().getCurrentUnRankedMatches());
     	}
     	winner.setTotalMatches(winner.getTotalMatches() + 1);
     	loser.setTotalMatches(loser.getTotalMatches() + 1);

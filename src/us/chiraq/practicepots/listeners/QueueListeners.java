@@ -23,6 +23,7 @@ import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -73,48 +74,15 @@ public class QueueListeners
             inventory = player.getOpenInventory().getTopInventory();
             if (inventory.getTitle().equalsIgnoreCase(QueueListeners.this.INVENTORY_TITLE1))
             {
-              inventory.clear();
-              for (Ladder ladder : Ladder.getLadders())
-              {
-                int size = ladder.getRankedQueue().size();
-                List<String> lore = new ArrayList<String>();
-                for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
-                {
-                  lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()));
-                }
-                ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
-                inventory.addItem(new ItemStack[] { itemStack });
-               }
+              updateRankedInventory(inventory);
              }
-            if (inventory.getTitle().equalsIgnoreCase(QueueListeners.this.INVENTORY_TITLE2))
+            else if (inventory.getTitle().equalsIgnoreCase(QueueListeners.this.INVENTORY_TITLE2))
             {
-              inventory.clear();
-              for (Ladder ladder : Ladder.getLadders())
-              {
-                int size = ladder.getUnrankedQueue().size();
-                List<String> lore = new ArrayList<String>();
-                for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
-                {
-                  lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()));
-                }
-                ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
-                inventory.addItem(new ItemStack[] { itemStack });
-               }
+              updateUnrankedInventory(inventory);
              }
-            if (inventory.getTitle().equalsIgnoreCase(QueueListeners.this.INVENTORY_TITLE3))
+            else if (inventory.getTitle().equalsIgnoreCase(QueueListeners.this.INVENTORY_TITLE3))
             {
-              inventory.clear();
-              for (Ladder ladder : Ladder.getLadders())
-              {
-                int size = ladder.getPremiumRankedQueue().size();
-                List<String> lore = new ArrayList<String>();
-                for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
-                {
-                  lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()));
-                }
-                ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
-                inventory.addItem(new ItemStack[] { itemStack });
-               }
+              updatePremiumRankedInventory(inventory);
              }
            }
          }
@@ -122,7 +90,7 @@ public class QueueListeners
       }
     }
     
-      .runTaskTimerAsynchronously(this.main, 1L, 5L);
+      .runTaskTimerAsynchronously(this.main, 1L, 20L);
   }
   
   @EventHandler
@@ -593,7 +561,10 @@ public class QueueListeners
               if (profile.isQueueCooldown()) {
             	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
               }
-    	      player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE1));
+              Inventory i = Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE1);
+    	      updateRankedInventory(i);
+    	      player.openInventory(i);
+    	      return;
     	    }
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.IRON_SWORD) && (profile.isInSpawn()))
       {
@@ -605,7 +576,9 @@ public class QueueListeners
           if (profile.isQueueCooldown()) {
         	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
           }
-    	  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE2));
+          Inventory i = Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE2);
+          updateUnrankedInventory(i);
+    	  player.openInventory(i);
     	  return;
       }
       if ((e.getAction().name().contains("RIGHT")) && (e.getItem() != null) && (e.getItem().getType() == Material.GOLD_SWORD) && (profile.isInSpawn()))
@@ -623,7 +596,10 @@ public class QueueListeners
           if (profile.isQueueCooldown()) {
         	  player.sendMessage(ChatColor.RED + "Wait two seconds before queueing!");
           }
-    	  player.openInventory(Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE3));
+          Inventory i = Bukkit.createInventory(player, 9 * this.cf.getInt("QUEUE.ROWS"), this.INVENTORY_TITLE3);
+          updatePremiumRankedInventory(i);
+    	  player.openInventory(i);
+    	  return;
       }
     	      else if (e.getItem() != null) {
     	    	  if (e.getItem().getType() != Material.AIR) {
@@ -631,6 +607,7 @@ public class QueueListeners
     	      			{
     	    			  if (profile.isInSpectator()) {
     	    				  e.setCancelled(true);
+    	    				  player.setGameMode(GameMode.SURVIVAL);
     	    				  Profile.getProfile(profile.getSpectatingPlayer().getUniqueId()).removeSpectator(player);
     	    				  profile.setSpectating(null);
     	    				  profile.setInSpectator(false);
@@ -698,6 +675,51 @@ public class QueueListeners
         inventory.addItem(new ItemStack[] { itemToSet });
       }
       player.openInventory(inventory);
+  }
+  
+  public void updateRankedInventory(Inventory inventory) {
+	  inventory.clear();
+      for (Ladder ladder : Ladder.getLadders())
+      {
+        int size = ladder.getRankedQueue().size();
+        List<String> lore = new ArrayList<String>();
+        for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
+        {
+          lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()).replace("%MATCHES%", ladder.getCurrentRankedMatches() + ""));
+        }
+        ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
+        inventory.addItem(new ItemStack[] { itemStack });
+       }
+  }
+  
+  public void updateUnrankedInventory(Inventory inventory) {
+      inventory.clear();
+      for (Ladder ladder : Ladder.getLadders())
+      {
+        int size = ladder.getUnrankedQueue().size();
+        List<String> lore = new ArrayList<String>();
+        for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
+        {
+          lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()).replace("%MATCHES%", ladder.getCurrentUnRankedMatches() + ""));
+        }
+        ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
+        inventory.addItem(new ItemStack[] { itemStack });
+       }
+  }
+  
+  public void updatePremiumRankedInventory(Inventory inventory) {
+      inventory.clear();
+      for (Ladder ladder : Ladder.getLadders())
+      {
+        int size = ladder.getPremiumRankedQueue().size();
+        List<String> lore = new ArrayList<String>();
+        for (String string : QueueListeners.this.lf.getStringList("QUEUE.ITEM.LORE"))
+        {
+          lore.add(string.replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName()).replace("%MATCHES%", ladder.getCurrentPremiumRankedMatches() + ""));
+        }
+        ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
+        inventory.addItem(new ItemStack[] { itemStack });
+       }
   }
   
 }

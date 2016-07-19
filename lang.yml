@@ -145,6 +145,7 @@ QUEUE:
   ITEM:
     DISPLAYNAME: "&6%LADDER% Queue"
     LORE:
+      - "&aThere are currently %MATCHES% in this ladder."
       - "&aThere are currently %SIZE% people in this queue."
       - "&eClick to enter a match."
   SEARCH:

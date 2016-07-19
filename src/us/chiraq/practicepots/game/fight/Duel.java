@@ -50,12 +50,15 @@ public class Duel {
         if (ranked == 0) {
             ladder.getRankedQueue().remove((Object)player1);
             ladder.getRankedQueue().remove((Object)player2);
+            ladder.setCurrentRankedMatches(ladder.getCurrentRankedMatches() + 1);
         } else if (ranked == 2) {
         	ladder.getPremiumRankedQueue().remove((Object)player1);
         	ladder.getPremiumRankedQueue().remove((Object)player2);
+        	ladder.setCurrentPremiumRankedMatches(ladder.getCurrentPremiumRankedMatches() + 1);
         } else {
             ladder.getUnrankedQueue().remove((Object)player1);
             ladder.getUnrankedQueue().remove((Object)player2);
+            ladder.setCurrentUnRankedMatches(ladder.getCurrentUnRankedMatches() + 1);
         }
         profile1.setDuel(this);
         profile2.setDuel(this);

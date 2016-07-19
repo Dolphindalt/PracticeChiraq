@@ -28,6 +28,9 @@ public class Ladder {
     private List<Player> unrankedQueue;
     private List<Player> rankedQueue;
     private List<Player> premiumRankedQueue;
+    private int currentRankedMatches;
+    private int currentPremiumRankedMatches;
+    private int currentUnRankedMatches;
 
     public Ladder(String name, int defaultElo, ItemStack itemStack) {
         this.name = name;
@@ -37,6 +40,9 @@ public class Ladder {
         this.unrankedQueue = new ArrayList<Player>();
         this.rankedQueue = new ArrayList<Player>();
         this.premiumRankedQueue = new ArrayList<Player>();
+        this.currentRankedMatches = 0;
+        this.currentPremiumRankedMatches = 0;
+        this.currentUnRankedMatches = 0;
         Ladder.getLadders().add(this);
     }
 
@@ -200,5 +206,34 @@ public class Ladder {
     public void setRankedQueue(List<Player> rankedQueue) {
         this.rankedQueue = rankedQueue;
     }
+
+	public int getCurrentRankedMatches() {
+		return currentRankedMatches;
+	}
+
+	public void setCurrentRankedMatches(int currentRankedMatches) {
+		this.currentRankedMatches = currentRankedMatches;
+	}
+
+	public int getCurrentUnRankedMatches() {
+		return currentUnRankedMatches;
+	}
+
+	public void setCurrentUnRankedMatches(int currentUnRankedMatches) {
+		this.currentUnRankedMatches = currentUnRankedMatches;
+	}
+
+	public void setPremiumRankedQueue(List<Player> premiumRankedQueue) {
+		this.premiumRankedQueue = premiumRankedQueue;
+	}
+
+	public int getCurrentPremiumRankedMatches() {
+		return currentPremiumRankedMatches;
+	}
+
+	public void setCurrentPremiumRankedMatches(int currentPremiumRankedMatches) {
+		this.currentPremiumRankedMatches = currentPremiumRankedMatches;
+	}
+    
 }
 
