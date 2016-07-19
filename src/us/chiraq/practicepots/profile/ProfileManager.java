@@ -89,6 +89,7 @@ public void sendToSpawn(Player player) {
       profile.setCurrentKit(null);
       profile.setDuel(null);
       profile.setInSpawn(true);
+      profile.setUsername(player.getName());
       for (PotionEffect potionEffect : player.getActivePotionEffects()) {
           player.removePotionEffect(potionEffect.getType());
       }

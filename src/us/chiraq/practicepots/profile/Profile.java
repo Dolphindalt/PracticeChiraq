@@ -32,6 +32,7 @@ public class Profile {
     private LangFile lf = Nanny.getInstance().getLangFile();
     private ConfigFile cf = Nanny.getInstance().getConfigFile();
     private UUID uuid;
+    private String username;
     private List<Kit> kits;
     private double globalElo;
     private int totalMatches;
@@ -608,6 +609,14 @@ public class Profile {
 
 	public void setArena(Arena arena) {
 		this.arena = arena;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }

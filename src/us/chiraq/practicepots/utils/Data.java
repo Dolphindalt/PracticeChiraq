@@ -104,6 +104,10 @@ public class Data implements Runnable {
             if (dbo.containsField("totalmatches")) {
             	totalMatches = dbo.getInt("totalmatches");
             }
+            String username = null;
+            if (dbo.containsField("username")) {
+            	username = dbo.getString("username");
+            }
             Profile profile = new Profile(uuid);
             if (kits != null) {
                 profile.setKits(kits);
@@ -122,6 +126,7 @@ public class Data implements Runnable {
             globalElo =  calculateGlobalElo(profile);
             profile.setGlobalElo(globalElo);
             profile.setTotalMatches(totalMatches);
+            profile.setUsername(username);
             for (Ladder ladder : Ladder.getLadders()) {
                 if (profile.getRank().containsKey(ladder)) continue;
                 profile.getRank().put(ladder, ladder.getDefaultElo());
@@ -172,6 +177,7 @@ public class Data implements Runnable {
             dbo.put("url", (Object)url);
             dbo.append("globalelo", profile.getGlobalElo());
             dbo.append("totalmatches", profile.getTotalMatches());
+            dbo.append("username", profile.getUsername());
             if (dbc.hasNext()) {
                 collection.update(dbc.getQuery(), dbo);
                 continue;
@@ -221,6 +227,7 @@ public class Data implements Runnable {
          dbo.put("url", (Object)url);
          dbo.append("globalelo", profile.getGlobalElo());
          dbo.append("totalmatches", profile.getTotalMatches());
+         dbo.append("username", profile.getUsername());
          if (dbc.hasNext()) {
              collection.update(dbc.getQuery(), dbo);
              return;
@@ -416,7 +423,7 @@ public class Data implements Runnable {
             int rl = p.calculateTotalFromHashMap(p.getRankedLosses());
 				
 			String entry = format;
-			entry = entry.replace("%POSITION%", position + "").replace("%NAME%", Bukkit.getOfflinePlayer(uuid).getName() + "").replace("%ELO%", elo + "").replace("%WINS%", rw + "").replace("%LOSSES%", rl + "");  
+			entry = entry.replace("%POSITION%", position + "").replace("%NAME%", p.getUsername() + "").replace("%ELO%", elo + "").replace("%WINS%", rw + "").replace("%LOSSES%", rl + "");  
 			display.add(entry);
 		}
 		String header = main.getLangFile().getString("STATS.LEADERBOARD.HEADER");
