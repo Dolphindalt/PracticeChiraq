@@ -8,6 +8,7 @@ import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.game.Arena;
 import us.chiraq.practicepots.game.Ladder;
 import us.chiraq.practicepots.game.kit.Kit;
+import us.chiraq.practicepots.listeners.ChunkListener;
 import us.chiraq.practicepots.profile.Profile;
 import us.chiraq.practicepots.utils.ItemStackSerializer;
 import us.chiraq.practicepots.utils.LocationSerialization;
@@ -323,6 +324,10 @@ public class Data {
                 if (!configuration.contains("ARENA." + key + ".LOCATION_ONE")) continue;
                 Location[] spawnLocations = new Location[]{LocationSerialization.deserializeLocation(configuration.getString("ARENA." + key + ".LOCATION_ONE")), LocationSerialization.deserializeLocation(configuration.getString("ARENA." + key + ".LOCATION_TWO"))};
                 arena.setSpawnLocations(spawnLocations);
+                for (Location l : spawnLocations) {
+                	ChunkListener.chunks.add(l.getChunk());
+                	l.getChunk().load();
+                }
             }
         }
     }

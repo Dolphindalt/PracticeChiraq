@@ -20,10 +20,12 @@ import us.chiraq.practicepots.commands.LeaderboardCommands;
 import us.chiraq.practicepots.commands.SaintCommand;
 import us.chiraq.practicepots.commands.SettingsCommand;
 import us.chiraq.practicepots.commands.SpectatorCommands;
+import us.chiraq.practicepots.commands.StatisticsCommand;
 import us.chiraq.practicepots.commands.TeamCommand;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
 import us.chiraq.practicepots.game.Ladder;
+import us.chiraq.practicepots.listeners.ChunkListener;
 import us.chiraq.practicepots.listeners.DuelListeners;
 import us.chiraq.practicepots.listeners.EditorListeners;
 import us.chiraq.practicepots.listeners.QueueListeners;
@@ -186,6 +188,7 @@ extends JavaPlugin {
         this.getCommand("settings").setExecutor((CommandExecutor)new SettingsCommand());
         this.getCommand("spectator").setExecutor((CommandExecutor)new SpectatorCommands(profileManager));
         this.getCommand("spectator").setTabCompleter((TabCompleter)new SpectatorCommands(profileManager));
+        this.getCommand("statistics").setExecutor(new StatisticsCommand());
     }
 
     private void registerManagers() {
@@ -198,6 +201,7 @@ extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents((Listener)new QueueListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new DuelListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new EditorListeners(), (Plugin)this);
+        Bukkit.getPluginManager().registerEvents((Listener)new ChunkListener(), (Plugin)this);
     }
 
     private void registerTasks() {

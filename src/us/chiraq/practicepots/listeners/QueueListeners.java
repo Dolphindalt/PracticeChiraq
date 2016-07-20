@@ -511,32 +511,7 @@ public class QueueListeners
         	  return;
           }
           if (profile.isInSpawn()) {
-              inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("QUEUE.ROWS")), (String)this.lf.getString("STATS.STATS_INVENTORY"));
-              int rwt = profile.calculateTotalFromHashMap(profile.getRankedWins());
-              int rlt = profile.calculateTotalFromHashMap(profile.getRankedLosses());
-
-              ArrayList<String> globalLore = new ArrayList<String>();
-              for (String string : this.lf.getStringList("STATS.ITEM_LORE")) {
-            	  if (string.contains("%ELO%")) globalLore.add(string.replace("%ELO%", profile.getGlobalElo() + ""));
-            	  if (string.contains("%RW%")) globalLore.add(string.replace("%RW%", rwt + ""));
-            	  if (string.contains("%RL%")) globalLore.add(string.replace("%RL%", rlt + ""));
-              }
-              String matches = this.lf.getString("STATS.TOTAL_MATCHES");
-              globalLore.add(2, matches.replace("%MATCHES%", profile.getTotalMatches() + ""));
-              ItemStack ge = Items.builder().setMaterial(Material.EYE_OF_ENDER).setName(this.lf.getString("STATS.GLOBAL_ELO_ITEM_NAME")).setLore(globalLore).build();
-              inventory.addItem(new ItemStack[]{ge});
-              ItemStack s = new ItemStack(Material.AIR);
-              for (Ladder ladder : Ladder.getLadders()) {
-                  ArrayList<String> lore = new ArrayList<String>();
-                  for (String string : this.lf.getStringList("STATS.ITEM_LORE")) {
-                	  if (string.contains("%ELO%")) lore.add(string.replace("%ELO%", profile.getRank().get(ladder) + ""));
-                	  if (string.contains("%RW%")) lore.add(string.replace("%RW%", profile.getRankedWins().get(ladder) + ""));
-                	  if (string.contains("%RL%")) lore.add(string.replace("%RL%", profile.getRankedLosses().get(ladder) + ""));
-                  }
-                  ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("STATS.ITEM_NAME").replace("%LADDER%", ladder.getName())).setLore(lore).build();
-                  inventory.addItem(new ItemStack[]{s, itemStack});
-              }
-              player.openInventory(inventory);
+        	  createStatsInventory(profile, player);
               return;
           }
       }
@@ -569,8 +544,12 @@ public class QueueListeners
     	    {
     	      e.setCancelled(true);
     	      if (!profile.isRankedUnlocked()) {
-    	    	  if (profile.calculateTotalFromHashMap(profile.getRankedWins()) >= 5) {
+    	    	  int total = 0;
+    	    	  if ((total = profile.calculateTotalFromHashMap(profile.getUnRankedWins())) >= 5) {
     	    		  profile.setRankedUnlocked(true);
+    	    	  } else {
+    	    		  player.sendMessage(this.lf.getString("CANNOT_RANKED").replace("%NUMBER%", (5 - total)  + ""));
+    	    		  return;
     	    	  }
     	      }
               if (profile.isInSpectator()) {
@@ -694,9 +673,9 @@ public class QueueListeners
 	  ItemStack pearl = Items.builder().setMaterial(Material.ENDER_PEARL).setName(this.lf.getString("SETTINGS.ENDERPEARL.NAME")).setLore(temp).build();
 	  temp.clear();
 	  if (profile.isDuelToggle()) {
-		  message = "On";
-	  } else {
 		  message = "Off";
+	  } else {
+		  message = "On";
 	  }
 	  for (String s : this.lf.getStringList("SETTINGS.PAPER.LORE")) {
 		  temp.add(s.replace("%VALUE%", message + ""));
@@ -759,6 +738,35 @@ public class QueueListeners
         ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(QueueListeners.this.lf.getString("QUEUE.ITEM.DISPLAYNAME").replace("%SIZE%", size + "").replace("%LADDER%", ladder.getName())).setLore(lore).build();
         inventory.addItem(new ItemStack[] { itemStack });
        }
+  }
+  
+  public void createStatsInventory(Profile profile, Player player) {
+      Inventory inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("QUEUE.ROWS")), profile.getUsername() + "'s " + (String)this.lf.getString("STATS.STATS_INVENTORY"));
+      int rwt = profile.calculateTotalFromHashMap(profile.getRankedWins());
+      int rlt = profile.calculateTotalFromHashMap(profile.getRankedLosses());
+
+      ArrayList<String> globalLore = new ArrayList<String>();
+      for (String string : this.lf.getStringList("STATS.ITEM_LORE")) {
+    	  if (string.contains("%ELO%")) globalLore.add(string.replace("%ELO%", profile.getGlobalElo() + ""));
+    	  if (string.contains("%RW%")) globalLore.add(string.replace("%RW%", rwt + ""));
+    	  if (string.contains("%RL%")) globalLore.add(string.replace("%RL%", rlt + ""));
+      }
+      String matches = this.lf.getString("STATS.TOTAL_MATCHES");
+      globalLore.add(2, matches.replace("%MATCHES%", profile.getTotalMatches() + ""));
+      ItemStack ge = Items.builder().setMaterial(Material.EYE_OF_ENDER).setName(this.lf.getString("STATS.GLOBAL_ELO_ITEM_NAME")).setLore(globalLore).build();
+      inventory.addItem(new ItemStack[]{ge});
+      ItemStack s = new ItemStack(Material.AIR);
+      for (Ladder ladder : Ladder.getLadders()) {
+          ArrayList<String> lore = new ArrayList<String>();
+          for (String string : this.lf.getStringList("STATS.ITEM_LORE")) {
+        	  if (string.contains("%ELO%")) lore.add(string.replace("%ELO%", profile.getRank().get(ladder) + ""));
+        	  if (string.contains("%RW%")) lore.add(string.replace("%RW%", profile.getRankedWins().get(ladder) + ""));
+        	  if (string.contains("%RL%")) lore.add(string.replace("%RL%", profile.getRankedLosses().get(ladder) + ""));
+          }
+          ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("STATS.ITEM_NAME").replace("%LADDER%", ladder.getName())).setLore(lore).build();
+          inventory.addItem(new ItemStack[]{s, itemStack});
+      }
+      player.openInventory(inventory);
   }
   
 }

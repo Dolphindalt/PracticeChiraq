@@ -17,6 +17,8 @@ commands:
     aliases: set
   spectator:
     aliases: spec
+  statistics:
+    aliases: [stats,stat]
 permissions:
   staff.mod:
     decription: Mod permissions.

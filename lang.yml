@@ -26,6 +26,7 @@ PLAYER_NOT_IN_SPAWN: "&cYou're not in spawn!"
 ERROR: "&cAn error occurred."
 NOPE: "&cYou can't do this!"
 INVENTORY_NOT_FOUND: "&cInventory not found!"
+CANNOT_RANKED: "&4You need to win &m&2%NUMBER%&r &4unranked matches to join a ranked queue!"
 STATS:
   STATS_INVENTORY: "Statistics"
   GLOBAL_ELO_ITEM_NAME: "&5Global Statistics"
