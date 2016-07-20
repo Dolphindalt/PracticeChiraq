@@ -37,7 +37,7 @@ implements Listener {
         if ((pro = Profile.getProfile(event.getPlayer().getUniqueId())) != null) {
         	Profile.getOnlineProfiles().add(pro);
         }
-        for (Profile p : Profile.getProfiles()) {
+        for (Profile p : Profile.getOnlineProfiles()) {
         	if (p.isShowPlayers()) {
             	Player pl = Bukkit.getPlayer(p.getUuid());
             	this.profileManager.showPlayer(event.getPlayer(), pl);

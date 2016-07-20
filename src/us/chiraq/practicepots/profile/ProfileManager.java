@@ -259,7 +259,7 @@ private static EntityPlayer getNmsPlayer(Player player) {
 
 public Profile getRandomDuelingProfile(Player sender) {
 	List<Profile> duels = new ArrayList<Profile>();
-	for (Profile profile: Profile.getProfiles()) {
+	for (Profile profile: Profile.getOnlineProfiles()) {
 		if (profile.getDuel() != null) {
 			duels.add(profile);
 		}
