@@ -35,8 +35,6 @@ STATS:
     - ""
     - "&bRanked Wins: %RW%"
     - "&bRanked Losses: %RL%"
-    - "&bUnRanked Wins: %URW%"
-    - "&bUnRanked Losses: %URL%"
     - "&aClick here to view leaderboard"
   TOTAL_MATCHES: "&bTotal Matches: %MATCHES%"
   LEADERBOARD:
@@ -172,10 +170,17 @@ DONATOR:
 SETTINGS:
   MESSAGES:
     PLAYER_VISIBILITY: "&4Player Visibility: %VALUE%"
+    DUEL_TOGGLE: "&4Duel Toggle: %VALUE%"
   INVENTORY_TITLE: "Settings"
   ENDERPEARL:
     NAME: "&2Toggle Players"
-    LORE: "%VALUE%"
+    LORE: 
+      - "%VALUE%"
+  PAPER:
+    NAME: "&2Toggle Duel Requests"
+    LORE:
+      - "%VALUE%"
+      - "&5Donator only"
 SPECTATOR:
   IN_SPECTATOR_MESSAGE: "&4You need to exit spectator mode first!"
   JOIN: "&aYou are now spectating %PLAYER%!"

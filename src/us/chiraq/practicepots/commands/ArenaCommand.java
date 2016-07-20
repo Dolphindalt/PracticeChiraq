@@ -1,8 +1,12 @@
 package us.chiraq.practicepots.commands;
 
+import java.util.Iterator;
+import java.util.List;
+
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.LangFile;
 import us.chiraq.practicepots.game.Arena;
+import us.chiraq.practicepots.game.Ladder;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -74,6 +78,19 @@ implements CommandExecutor {
                     return true;
                 }
                 Arena.getArenas().remove(arena);
+                
+                Iterator<Ladder> itr = Ladder.getLadders().iterator();
+                while (itr.hasNext()) {
+                	Ladder l = itr.next();
+                	for (Arena a : l.getArenas()) {
+                		if (a.equals(arena)) {
+                			List<Arena> newA = l.getArenas();
+                			newA.remove(arena);
+                			l.setArenas(newA);
+                		}
+                	}
+                }
+                
                 sender.sendMessage(this.lf.getString("ARENA_COMMAND.DELETED"));
                 return true;
             }

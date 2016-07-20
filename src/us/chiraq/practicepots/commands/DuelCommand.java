@@ -32,7 +32,7 @@ TabCompleter {
     private static LangFile lf = DuelCommand.main.getLangFile();
     private static ConfigFile cf = main.getConfigFile();
 
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(DuelCommand.lf.getString("NOT_PLAYER"));
             return true;
@@ -48,6 +48,11 @@ TabCompleter {
             if (challenged == null) {
                 player.sendMessage(DuelCommand.lf.getString("NOT_FOUND"));
                 return true;
+            }
+            Profile c = Profile.getProfile(challenged.getUniqueId());
+            if (c.isDuelToggle()) {
+            	sender.sendMessage(ChatColor.RED + "The player you tried to duel has their duel requests toggled off!");
+            	return true;
             }
             if (profile.isInSpectator()) {
             	sender.sendMessage(DuelCommand.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));

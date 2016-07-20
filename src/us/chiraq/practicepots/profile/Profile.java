@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Profile {
     private static Set<Profile> profiles = new HashSet<Profile>();
+    private static Set<Profile> onlineProfiles = new HashSet<Profile>();
     private LangFile lf = Nanny.getInstance().getLangFile();
     private ConfigFile cf = Nanny.getInstance().getConfigFile();
     private UUID uuid;
@@ -46,6 +47,8 @@ public class Profile {
     private boolean inKitEditor;
     private boolean inSpectator;
     private boolean queueCooldown;
+    private boolean duelToggle;
+    private boolean rankedUnlocked;
     private Player spectating;
     private Ladder searchingLadder;
     private int searchingRange;
@@ -107,11 +110,63 @@ public class Profile {
         this.invulnerability = false;
         this.showPlayers = false;
         this.inSpectator = false;
+        this.duelToggle = false;
+        this.rankedUnlocked = false;
         this.setQueueCooldown(false);
         this.spectating = null;
         this.selected = null;
         this.arena = null;
         Profile.getProfiles().add(this);
+    }
+    
+    public Profile(UUID uuid, boolean online) {
+        this.uuid = uuid;
+        this.kits = new ArrayList<Kit>();
+        this.duelRequests = new HashMap<Player, Ladder>();
+        this.globalElo = 0;
+        this.totalMatches = 0;
+        this.rank = new HashMap<Ladder, Integer>();
+        this.rankedWins = new HashMap<Ladder, Integer>();
+        this.rankedLosses = new HashMap<Ladder, Integer>();
+        this.unRankedWins = new HashMap<Ladder, Integer>();
+        this.unRankedLosses = new HashMap<Ladder, Integer>();
+        this.projectiles = new HashSet<Entity>();
+        this.drops = new HashSet<Entity>();
+        this.spectatingPlayers = new ArrayList<Player>();
+        for (Ladder ladder : Ladder.getLadders()) {
+            if (this.rank.containsKey(ladder)) continue;
+            this.rank.put(ladder, ladder.getDefaultElo());
+        }
+        for (Ladder ladder : Ladder.getLadders()) {
+            if (rankedWins.containsKey(ladder)) continue;
+            rankedWins.put(ladder, 0);
+        }
+        for (Ladder ladder : Ladder.getLadders()) {
+            if (rankedLosses.containsKey(ladder)) continue;
+            rankedLosses.put(ladder, 0);
+        }
+        for (Ladder ladder : Ladder.getLadders()) {
+            if (unRankedWins.containsKey(ladder)) continue;
+            unRankedWins.put(ladder, 0);
+        }
+        for (Ladder ladder : Ladder.getLadders()) {
+            if (unRankedLosses.containsKey(ladder)) continue;
+            unRankedLosses.put(ladder, 0);
+        }
+        this.damaged = new HashSet<Player>();
+        this.invulnerability = false;
+        this.showPlayers = false;
+        this.inSpectator = false;
+        this.duelToggle = false;
+        this.rankedUnlocked = false;
+        this.setQueueCooldown(false);
+        this.spectating = null;
+        this.selected = null;
+        this.arena = null;
+        Profile.getProfiles().add(this);
+        if (online == true) {
+        	Profile.getOnlineProfiles().add(this);
+        }
     }
 
     public void putInQueue(final Ladder ladder, final int ranked) {
@@ -617,6 +672,30 @@ public class Profile {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public boolean isDuelToggle() {
+		return duelToggle;
+	}
+
+	public void setDuelToggle(boolean duelToggle) {
+		this.duelToggle = duelToggle;
+	}
+
+	public boolean isRankedUnlocked() {
+		return rankedUnlocked;
+	}
+
+	public void setRankedUnlocked(boolean rankedUnlocked) {
+		this.rankedUnlocked = rankedUnlocked;
+	}
+
+	public static Set<Profile> getOnlineProfiles() {
+		return onlineProfiles;
+	}
+
+	public static void setOnlineProfiles(Set<Profile> onlineProfiles) {
+		Profile.onlineProfiles = onlineProfiles;
 	}
 	
 }

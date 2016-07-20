@@ -27,13 +27,56 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class Data implements Runnable {
+public class Data {
     private static Nanny main = Nanny.getInstance();
     private static int pagesSize = main.getLangFile().getInt("STATS.LEADERBOARD.AMOUNTPERPAGE");
     
-	public void run() {
-		saveProfiles();
-	}
+    public static void loadSettings() {
+    	DBCursor dbc = main.getSettings().find();
+    	while (dbc.hasNext()) {
+    		BasicDBObject dbo = (BasicDBObject)dbc.next();
+            UUID uuid = UUID.fromString(dbo.getString("uuid"));
+            Profile p = Profile.getProfile(uuid);
+            boolean rankedUnlocked = false;
+            if (dbo.containsField("rankedunlocked")) {
+            	String s = dbo.getString("rankedunlocked");
+            	s.replace("[", "").replace("]", "");
+            	rankedUnlocked = Boolean.parseBoolean(s);
+            }
+            boolean vis = false;
+            if (dbo.containsField("playervisibility")) {
+            	String s = dbo.getString("playervisibility");
+            	s.replace("[", "").replace("]", "");
+            	vis = Boolean.parseBoolean(s);
+            }
+            boolean duelToggle = false;
+            if (dbo.containsField("dueltoggle")) {
+            	String s = dbo.getString("dueltoggle");
+            	s.replace("[", "").replace("]", "");
+            	duelToggle = Boolean.parseBoolean(s);
+            }
+            p.setRankedUnlocked(rankedUnlocked);
+            p.setShowPlayers(vis);
+            p.setDuelToggle(duelToggle);
+    	}
+    }
+    
+    public static void saveSettings() {
+    	DBCollection settings = main.getSettings();
+    	for (Profile profile : Profile.getProfiles()) {
+    		DBCursor dbc = settings.find(new BasicDBObject("uuid", profile.getUuid().toString()));
+    		BasicDBObject dbo = new BasicDBObject("uuid", profile.getUuid().toString());
+    		dbo.append("uuid", profile.getUuid());
+    		dbo.append("rankedunlocked", profile.isRankedUnlocked());
+    		dbo.append("playervisibility", profile.isShowPlayers());
+    		dbo.append("dueltoggle", profile.isDuelToggle());
+            if (dbc.hasNext()) {
+                settings.update(dbc.getQuery(), dbo);
+                continue;
+            }
+            settings.insert(dbo);
+    	}
+    }
     
     @SuppressWarnings("deprecation")
 	public static void loadProfiles() {

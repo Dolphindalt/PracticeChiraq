@@ -85,7 +85,7 @@ private ProtocolManager protocolManager = this.main.getProtocolManager();
 public void sendToSpawn(Player player) {
 	  player.setLevel(0);
       player.teleport(player.getWorld().getSpawnLocation());
-      Profile profile = Profile.getProfile(player.getUniqueId()) == null ? new Profile(player.getUniqueId()) : Profile.getProfile(player.getUniqueId());
+      Profile profile = Profile.getProfile(player.getUniqueId()) == null ? new Profile(player.getUniqueId(), true) : Profile.getProfile(player.getUniqueId());
       profile.setCurrentKit(null);
       profile.setDuel(null);
       profile.setInSpawn(true);

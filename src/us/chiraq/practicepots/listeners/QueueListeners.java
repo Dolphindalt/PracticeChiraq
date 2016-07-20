@@ -1,7 +1,6 @@
 package us.chiraq.practicepots.listeners;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -161,20 +160,45 @@ public class QueueListeners
       {
     	  e.setCancelled(true);
     	  ItemStack itemStack = e.getCurrentItem();
-    	  if ((itemStack != null) && itemStack.getType() == Material.ENDER_PEARL)
-    	  {
-    		  if (profile.isShowPlayers())
-    		  {
-    			  profile.setShowPlayers(false);
-    			  Nanny.getInstance().getProfileManager().hidePlayerFromAll(player);
+    	  if (itemStack != null) {
+    		if (itemStack.getType() == Material.ENDER_PEARL)
+    	  	{
+    			String message;
+    		  	if (profile.isShowPlayers())
+    		  	{
+    			  	profile.setShowPlayers(false);
+    			  	Nanny.getInstance().getProfileManager().hidePlayerFromAll(player);
+    			  	message = "Off";
+    		  	} else {
+    			  	profile.setShowPlayers(true);
+    			  	Nanny.getInstance().getProfileManager().showAllPlayers(player);
+    			  	message = "On";
+    		  	}
+    		  	player.updateInventory();
+    		  	showSettingsInventory(player, profile);
+    		  	player.sendMessage(this.lf.getString("SETTINGS.MESSAGES.PLAYER_VISIBILITY").replace("%VALUE%", message + ""));
+    		  	return;
+    	  	}
+    	  	else if (itemStack.getType() == Material.PAPER)
+    	  	{
+    		  if (player.hasPermission("practice.premium")) {
+    			  String message;
+    			  if (profile.isDuelToggle()) {
+    				  profile.setDuelToggle(false);
+    				  message = "Off";
+    			  } else {
+    				  profile.setDuelToggle(true);
+    				  message = "On";
+    			  }
+      		  	player.updateInventory();
+      		  	showSettingsInventory(player, profile);
+      		  	player.sendMessage(this.lf.getString("SETTINGS.MESSAGES.DUEL_TOGGLE").replace("%VALUE%", message + ""));
+      		  	return;
     		  } else {
-    			  profile.setShowPlayers(true);
-    			  Nanny.getInstance().getProfileManager().showAllPlayers(player);
+    			  player.sendMessage(this.lf.getString("DONATOR.PREMIUM.ACCESS_DENIED"));
+    			  return;
     		  }
-    		  itemStack.getItemMeta().setLore(Arrays.asList(this.lf.getString("SETTINGS.ENDERPEARL.LORE").replace("%VALUE%", profile.isShowPlayers() + "")));
-    		  player.updateInventory();
-    		  showSettingsInventory(player, profile);
-    		  player.sendMessage(this.lf.getString("SETTINGS.MESSAGES.PLAYER_VISIBILITY").replace("%VALUE%", profile.isShowPlayers() + ""));
+    	  	}
     	  }
     	  return;
       }
@@ -477,11 +501,7 @@ public class QueueListeners
         	  return;
           }
     	  if (profile.isInSpawn()) {
-    		  inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("SETTINGS.ROWS")), SETTINGS_INVENTORY_TITLE);
-    		  ItemStack itemStack = Items.builder().setMaterial(Material.ENDER_PEARL).setName(this.lf.getString("SETTINGS.ENDERPEARL.NAME"))
-    				  .setLore(this.lf.getString("SETTINGS.ENDERPEARL.LORE").replace("%VALUE%", profile.isShowPlayers() + "")).build();
-    		  inventory.addItem(new ItemStack[]{itemStack});
-    		  player.openInventory(inventory);
+    		  showSettingsInventory(player, profile);
     		  return;
     	  }
       }
@@ -491,19 +511,15 @@ public class QueueListeners
         	  return;
           }
           if (profile.isInSpawn()) {
-              inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("QUEUE.ROWS")), (String)this.lf.getString("STATS.STATS_INVENTORY")); //TODO: Implement Stats
+              inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("QUEUE.ROWS")), (String)this.lf.getString("STATS.STATS_INVENTORY"));
               int rwt = profile.calculateTotalFromHashMap(profile.getRankedWins());
               int rlt = profile.calculateTotalFromHashMap(profile.getRankedLosses());
-              int urwt = profile.calculateTotalFromHashMap(profile.getUnRankedWins());
-              int urlt = profile.calculateTotalFromHashMap(profile.getUnRankedLosses());
 
               ArrayList<String> globalLore = new ArrayList<String>();
               for (String string : this.lf.getStringList("STATS.ITEM_LORE")) {
             	  if (string.contains("%ELO%")) globalLore.add(string.replace("%ELO%", profile.getGlobalElo() + ""));
             	  if (string.contains("%RW%")) globalLore.add(string.replace("%RW%", rwt + ""));
             	  if (string.contains("%RL%")) globalLore.add(string.replace("%RL%", rlt + ""));
-            	  if (string.contains("%URW%")) globalLore.add(string.replace("%URW%", urwt + ""));
-            	  if (string.contains("%URL%")) globalLore.add(string.replace("%URL%", urlt + ""));
               }
               String matches = this.lf.getString("STATS.TOTAL_MATCHES");
               globalLore.add(2, matches.replace("%MATCHES%", profile.getTotalMatches() + ""));
@@ -516,8 +532,6 @@ public class QueueListeners
                 	  if (string.contains("%ELO%")) lore.add(string.replace("%ELO%", profile.getRank().get(ladder) + ""));
                 	  if (string.contains("%RW%")) lore.add(string.replace("%RW%", profile.getRankedWins().get(ladder) + ""));
                 	  if (string.contains("%RL%")) lore.add(string.replace("%RL%", profile.getRankedLosses().get(ladder) + ""));
-                	  if (string.contains("%URW%")) lore.add(string.replace("%URW%", profile.getUnRankedWins().get(ladder) + ""));
-                	  if (string.contains("%URL%")) lore.add(string.replace("%URL%", profile.getUnRankedLosses().get(ladder) + ""));
                   }
                   ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("STATS.ITEM_NAME").replace("%LADDER%", ladder.getName())).setLore(lore).build();
                   inventory.addItem(new ItemStack[]{s, itemStack});
@@ -554,6 +568,11 @@ public class QueueListeners
     	      (profile.isInSpawn()))
     	    {
     	      e.setCancelled(true);
+    	      if (!profile.isRankedUnlocked()) {
+    	    	  if (profile.calculateTotalFromHashMap(profile.getRankedWins()) >= 5) {
+    	    		  profile.setRankedUnlocked(true);
+    	    	  }
+    	      }
               if (profile.isInSpectator()) {
             	  player.sendMessage(this.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
             	  return;
@@ -611,6 +630,7 @@ public class QueueListeners
     	    				  Profile.getProfile(profile.getSpectatingPlayer().getUniqueId()).removeSpectator(player);
     	    				  profile.setSpectating(null);
     	    				  profile.setInSpectator(false);
+    	    				  pm.hidePlayerFromAll(player);
     	    				  pm.sendToSpawn(player);
     	    				  return;
     	    			  }
@@ -661,9 +681,28 @@ public class QueueListeners
   
   public void showSettingsInventory(Player player, Profile profile) {
 	  Inventory inventory = Bukkit.createInventory((InventoryHolder)player, (int)(9 * this.cf.getInt("SETTINGS.ROWS")), SETTINGS_INVENTORY_TITLE);
-	  ItemStack itemStack = Items.builder().setMaterial(Material.ENDER_PEARL).setName(this.lf.getString("SETTINGS.ENDERPEARL.NAME"))
-			  .setLore(this.lf.getString("SETTINGS.ENDERPEARL.LORE").replace("%VALUE%", profile.isShowPlayers() + "")).build();
-	  inventory.addItem(new ItemStack[]{itemStack});
+	  List<String> temp = new ArrayList<String>();
+	  String message;
+	  if (profile.isShowPlayers()) {
+		  message = "On";
+	  } else {
+		  message = "Off";
+	  }
+	  for (String s : this.lf.getStringList("SETTINGS.ENDERPEARL.LORE")) {
+		  temp.add(s.replace("%VALUE%", message + ""));
+	  }
+	  ItemStack pearl = Items.builder().setMaterial(Material.ENDER_PEARL).setName(this.lf.getString("SETTINGS.ENDERPEARL.NAME")).setLore(temp).build();
+	  temp.clear();
+	  if (profile.isDuelToggle()) {
+		  message = "On";
+	  } else {
+		  message = "Off";
+	  }
+	  for (String s : this.lf.getStringList("SETTINGS.PAPER.LORE")) {
+		  temp.add(s.replace("%VALUE%", message + ""));
+	  }
+	  ItemStack paper = Items.builder().setMaterial(Material.PAPER).setName(this.lf.getString("SETTINGS.PAPER.NAME")).setLore(temp).build();
+	  inventory.addItem(new ItemStack[]{pearl, paper});
 	  player.openInventory(inventory);
   }
   

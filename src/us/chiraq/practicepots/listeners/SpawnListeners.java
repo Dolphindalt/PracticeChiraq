@@ -33,6 +33,16 @@ implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.profileManager.hidePlayer(event.getPlayer(), player);
         }
+        Profile pro = null;
+        if ((pro = Profile.getProfile(event.getPlayer().getUniqueId())) != null) {
+        	Profile.getOnlineProfiles().add(pro);
+        }
+        for (Profile p : Profile.getProfiles()) {
+        	if (p.isShowPlayers()) {
+            	Player pl = Bukkit.getPlayer(p.getUuid());
+            	this.profileManager.showPlayer(event.getPlayer(), pl);
+        	}
+        }
     }
 
     @EventHandler

@@ -67,6 +67,7 @@ extends JavaPlugin {
     private MongoClient mc;
     private DB db;
     private DBCollection collection;
+    private DBCollection settings;
 
     public void onEnable() {
         instance = this;
@@ -87,6 +88,7 @@ extends JavaPlugin {
         Data.loadArenas();
         Data.loadLadders();
         Data.loadProfiles();
+        Data.loadSettings();
         this.registerManagers();
         this.registerListeners();
         this.registerCommands();
@@ -157,6 +159,7 @@ extends JavaPlugin {
         }
         try {
             Data.saveArenas();
+            Data.saveSettings();
             Data.saveProfiles();
         }
         catch (Exception ex) {
@@ -216,6 +219,7 @@ extends JavaPlugin {
 		}
 		
         this.collection = this.db.getCollection("profiles");
+        this.settings = this.db.getCollection("settings");
     }
 
     public static Nanny getInstance() {
@@ -257,6 +261,10 @@ extends JavaPlugin {
     public void setKitEditor(Location kitEditor) {
         this.kitEditor = kitEditor;
     }
+
+	public DBCollection getSettings() {
+		return settings;
+	}
 
 }
 

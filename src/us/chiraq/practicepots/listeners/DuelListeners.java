@@ -185,6 +185,7 @@ implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         Profile profile = Profile.getProfile(player.getUniqueId());
+        Profile.getOnlineProfiles().remove(profile);
         profile.setQueueCooldown(false);
         new InventorySave(player);
         if (profile.isInSpectator()) {
@@ -485,6 +486,8 @@ implements Listener {
             loser.setGlobalElo(Data.calculateGlobalElo(loser));
             Data.saveProfile(loser);
             Data.saveProfile(winner);
+        	winner.setTotalMatches(winner.getTotalMatches() + 1);
+        	loser.setTotalMatches(loser.getTotalMatches() + 1);
         	duel.getLadder().setCurrentRankedMatches(duel.getLadder().getCurrentRankedMatches() - 1);
     	} else if (type == 2) {
         	loser.getRankedLosses().put(duel.getLadder(), loser.getRankedLosses().get(duel.getLadder()) + 1);
@@ -493,14 +496,14 @@ implements Listener {
             loser.setGlobalElo(Data.calculateGlobalElo(loser));
             Data.saveProfile(loser);
             Data.saveProfile(winner);
+        	winner.setTotalMatches(winner.getTotalMatches() + 1);
+        	loser.setTotalMatches(loser.getTotalMatches() + 1);
             duel.getLadder().setCurrentPremiumRankedMatches(duel.getLadder().getCurrentPremiumRankedMatches()-1);
     	} else {
     		loser.getUnRankedLosses().put(duel.getLadder(), loser.getUnRankedLosses().get(duel.getLadder()) + 1);
             winner.getUnRankedWins().put(duel.getLadder(), winner.getUnRankedWins().get(duel.getLadder()) + 1);
-            duel.getLadder().setCurrentUnRankedMatches(duel.getLadder().getCurrentUnRankedMatches());
+            duel.getLadder().setCurrentUnRankedMatches(duel.getLadder().getCurrentUnRankedMatches()-1);
     	}
-    	winner.setTotalMatches(winner.getTotalMatches() + 1);
-    	loser.setTotalMatches(loser.getTotalMatches() + 1);
     	
     	for (Player player : winner.getSpectatingPlayers()) {
     		player.setGameMode(GameMode.SURVIVAL);
