@@ -182,6 +182,12 @@ SETTINGS:
     LORE:
       - "%VALUE%"
       - "&5Donator only"
+  BED:
+    NAME: "&2Toggle Day/Night"
+    LORE:
+      - "%VALUE%"
+  WOOL:
+    NAME: "&2PM Color"
 SPECTATOR:
   IN_SPECTATOR_MESSAGE: "&4You need to exit spectator mode first!"
   JOIN: "&aYou are now spectating %PLAYER%!"

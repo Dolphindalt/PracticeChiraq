@@ -17,19 +17,23 @@ import us.chiraq.practicepots.commands.DuelCommand;
 import us.chiraq.practicepots.commands.InventoryCommand;
 import us.chiraq.practicepots.commands.LadderCommand;
 import us.chiraq.practicepots.commands.LeaderboardCommands;
+import us.chiraq.practicepots.commands.PMCommand;
 import us.chiraq.practicepots.commands.SaintCommand;
 import us.chiraq.practicepots.commands.SettingsCommand;
 import us.chiraq.practicepots.commands.SpectatorCommands;
 import us.chiraq.practicepots.commands.StatisticsCommand;
 import us.chiraq.practicepots.commands.TeamCommand;
+import us.chiraq.practicepots.commands.WhitelistComand;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
+import us.chiraq.practicepots.files.types.PMFile;
 import us.chiraq.practicepots.game.Ladder;
 import us.chiraq.practicepots.listeners.ChunkListener;
 import us.chiraq.practicepots.listeners.DuelListeners;
 import us.chiraq.practicepots.listeners.EditorListeners;
 import us.chiraq.practicepots.listeners.QueueListeners;
 import us.chiraq.practicepots.listeners.SpawnListeners;
+import us.chiraq.practicepots.listeners.WeatherListener;
 import us.chiraq.practicepots.profile.Profile;
 import us.chiraq.practicepots.profile.ProfileManager;
 import us.chiraq.practicepots.utils.Data;
@@ -60,8 +64,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Nanny
 extends JavaPlugin {
     private static Nanny instance;
+    
     private ConfigFile configFile;
     private LangFile langFile;
+    private PMFile pmfile;
     private ProfileManager profileManager;
     //private Glaedr glaedr;
     private ProtocolManager protocolManager;
@@ -70,13 +76,14 @@ extends JavaPlugin {
     private DB db;
     private DBCollection collection;
     private DBCollection settings;
-
+    
     public void onEnable() {
         instance = this;
         this.configFile = new ConfigFile();
         this.langFile = new LangFile();
+        this.pmfile = new PMFile();
         //this.glaedr = new Glaedr(this, this.langFile.getString("SCOREBOARD.TITLE"));
-        
+
         //Scoreboard Lines (Start)
         //this.glaedr.getTopWrappers().add("&7&m----------------------");
         //this.glaedr.getBottomWrappers().add("&7&m----------------------");
@@ -189,6 +196,8 @@ extends JavaPlugin {
         this.getCommand("spectator").setExecutor((CommandExecutor)new SpectatorCommands(profileManager));
         this.getCommand("spectator").setTabCompleter((TabCompleter)new SpectatorCommands(profileManager));
         this.getCommand("statistics").setExecutor(new StatisticsCommand());
+        this.getCommand("duelwhitelist").setExecutor(new WhitelistComand());
+        this.getCommand("pm").setExecutor(new PMCommand(pmfile));
     }
 
     private void registerManagers() {
@@ -202,6 +211,7 @@ extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents((Listener)new DuelListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new EditorListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new ChunkListener(), (Plugin)this);
+        Bukkit.getPluginManager().registerEvents((Listener)new WeatherListener(), (Plugin)this);
     }
 
     private void registerTasks() {

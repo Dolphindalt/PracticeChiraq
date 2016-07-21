@@ -50,7 +50,7 @@ TabCompleter {
                 return true;
             }
             Profile c = Profile.getProfile(challenged.getUniqueId());
-            if (c.isDuelToggle()) {
+            if (c.isDuelToggle() && (!c.getDuelWhiteList().contains(profile.getUuid()))) {
             	sender.sendMessage(ChatColor.RED + "The player you tried to duel has their duel requests toggled off!");
             	return true;
             }
@@ -116,7 +116,7 @@ TabCompleter {
             	new Duel(player, challenged, profile, challengedProfile, challengedProfile.getSelected(), challengedProfile.getArena(), 1);
             }
             return true;
-        }
+        } 
         for (String message : DuelCommand.lf.getStringList("DUEL_COMMAND.USAGE")) {
             sender.sendMessage(message);
         }

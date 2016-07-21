@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -130,5 +131,78 @@ public final class Items {
         }
     }
 
+    public static String addChatColor(String lore)
+	{
+		if(lore.contains("&0"))
+		{
+			lore = lore.replace("&0", "" + ChatColor.BLACK);
+		}
+		if(lore.contains("&1"))
+		{
+			lore = lore.replace("&1", "" + ChatColor.DARK_BLUE);
+		}
+		if(lore.contains("&2"))
+		{
+			lore = lore.replace("&2", "" + ChatColor.DARK_GREEN);
+		}
+		if(lore.contains("&3"))
+		{
+			lore = lore.replace("&3", "" + ChatColor.DARK_AQUA);
+		}
+		if(lore.contains("&4"))
+		{
+			lore = lore.replace("&4", "" + ChatColor.DARK_RED);
+		}
+		if(lore.contains("&5"))
+		{
+			lore = lore.replace("&5", "" + ChatColor.DARK_PURPLE);
+		}
+		if(lore.contains("&6"))
+		{
+			lore = lore.replace("&6", "" + ChatColor.GOLD);
+		}
+		if(lore.contains("&7"))
+		{
+			lore = lore.replace("&7", "" + ChatColor.GRAY);
+		}
+		if(lore.contains("&8"))
+		{
+			lore = lore.replace("&8", "" + ChatColor.DARK_GRAY);
+		}
+		if(lore.contains("&9"))
+		{
+			lore = lore.replace("&9", "" + ChatColor.BLUE);
+		}
+		if(lore.contains("&a"))
+		{
+			lore = lore.replace("&a", "" + ChatColor.GREEN);
+		}
+		if(lore.contains("&b"))
+		{
+			lore = lore.replace("&b", "" + ChatColor.AQUA);
+		}
+		if(lore.contains("&c"))
+		{
+			lore = lore.replace("&c", "" + ChatColor.RED);
+		}
+		if(lore.contains("&d"))
+		{
+			lore = lore.replace("&d", "" + ChatColor.LIGHT_PURPLE);
+		}
+		if(lore.contains("&e"))
+		{
+			lore = lore.replace("&e", "" + ChatColor.YELLOW);
+		}
+		if(lore.contains("&f"))
+		{
+			lore = lore.replace("&f", "" + ChatColor.WHITE);
+		}
+		if(lore.contains("&k"))
+		{
+			lore = lore.replace("&k", "" + ChatColor.MAGIC);
+		}
+		return lore;
+	}
+    
 }
 

@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -42,6 +43,7 @@ public class Profile {
     private Map <Ladder, Integer> rankedLosses;
     private Map <Ladder, Integer> unRankedWins;
     private Map <Ladder, Integer> unRankedLosses;
+    private List<UUID> duelWhiteList;
     private boolean inSpawn;
     private boolean inArena;
     private boolean inKitEditor;
@@ -49,6 +51,7 @@ public class Profile {
     private boolean queueCooldown;
     private boolean duelToggle;
     private boolean rankedUnlocked;
+    private boolean night;
     private Player spectating;
     private Ladder searchingLadder;
     private int searchingRange;
@@ -66,6 +69,8 @@ public class Profile {
     private Set<Player> damaged;
     private Ladder selected;
     private Arena arena;
+    private String chatcolor;
+    private int chatdata;
 
     private List<Player> spectatingPlayers;
     
@@ -85,6 +90,7 @@ public class Profile {
         this.unRankedLosses = new HashMap<Ladder, Integer>();
         this.projectiles = new HashSet<Entity>();
         this.drops = new HashSet<Entity>();
+        this.duelWhiteList = new ArrayList<UUID>();
         this.spectatingPlayers = new ArrayList<Player>();
         for (Ladder ladder : Ladder.getLadders()) {
             if (this.rank.containsKey(ladder)) continue;
@@ -113,9 +119,12 @@ public class Profile {
         this.duelToggle = false;
         this.rankedUnlocked = false;
         this.setQueueCooldown(false);
+        this.night = false;
         this.spectating = null;
         this.selected = null;
         this.arena = null;
+        this.chatcolor = "§f";
+        this.chatdata = 0;
         Profile.getProfiles().add(this);
     }
     
@@ -219,7 +228,7 @@ public class Profile {
                                 otherPlayer.sendMessage(Profile.this.lf.getString("ERROR"));
                                 return;
                             }
-                            new Duel(player, otherPlayer, Profile.this, profile, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())), 0); //TODO: Come back later
+                            new Duel(player, otherPlayer, Profile.this, profile, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())), 0);
                             this.cancel();
                             Profile.this.queue = null;
                             profile.setQueue(null);
@@ -287,7 +296,7 @@ public class Profile {
                             }
                             Nanny.getInstance().getProfileManager().hidePlayerFromAll(player);
                             Nanny.getInstance().getProfileManager().hidePlayerFromAll(otherPlayer);
-                            new Duel(player, otherPlayer, Profile.this, profile, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())), 1); //TODO: Come back later
+                            new Duel(player, otherPlayer, Profile.this, profile, ladder, ladder.getArenas().get(new Random().nextInt(ladder.getArenas().size())), 1);
                             this.cancel();
                             Profile.this.queue = null;
                             profile.setQueue(null);
@@ -340,6 +349,14 @@ public class Profile {
         return null;
     }
 
+    public static Profile getProfile(String name) {
+    	for (Profile profile : Profile.getProfiles()) {
+    		if (!profile.getUsername().equalsIgnoreCase((name))) continue;
+    		return profile;
+    	}
+    	return null;
+    }
+    
     public static Set<Profile> getProfiles() {
         return profiles;
     }
@@ -697,6 +714,55 @@ public class Profile {
 	public static void setOnlineProfiles(Set<Profile> onlineProfiles) {
 		Profile.onlineProfiles = onlineProfiles;
 	}
+
+	public List<UUID> getDuelWhiteList() {
+		return duelWhiteList;
+	}
+
+	public void setDuelWhiteList(List<UUID> duelWhiteList) {
+		this.duelWhiteList = duelWhiteList;
+	}
+	
+	public void removePlayerfromWhitelist(OfflinePlayer w) {
+		this.duelWhiteList.remove(w.getUniqueId());
+	}
+	
+	public void addPlayertoWhitelist(OfflinePlayer w) {
+		this.duelWhiteList.add(w.getUniqueId());
+	}
+
+	public boolean isNight() {
+		return night;
+	}
+
+	public void setNight(boolean night) {
+		this.night = night;
+	}
+
+	public String getChatcolor() {
+		return chatcolor;
+	}
+
+	public void setChatcolor(String chatcolor) {
+		this.chatcolor = chatcolor;
+	}
+	
+	public static Profile getProfilefromOnline(UUID uuid) {
+		for (Profile p : Profile.getOnlineProfiles()) {
+			if (!p.getUuid().equals(uuid)) continue;
+			return p;
+		}
+		return null;
+	}
+
+	public int getChatdata() {
+		return chatdata;
+	}
+
+	public void setChatdata(int chatdata) {
+		this.chatdata = chatdata;
+	}
+	
 	
 }
 

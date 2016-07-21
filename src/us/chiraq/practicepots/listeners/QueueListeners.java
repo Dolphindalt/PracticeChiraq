@@ -185,10 +185,10 @@ public class QueueListeners
     			  String message;
     			  if (profile.isDuelToggle()) {
     				  profile.setDuelToggle(false);
-    				  message = "Off";
+    				  message = "On";
     			  } else {
     				  profile.setDuelToggle(true);
-    				  message = "On";
+    				  message = "Off";
     			  }
       		  	player.updateInventory();
       		  	showSettingsInventory(player, profile);
@@ -198,24 +198,50 @@ public class QueueListeners
     			  player.sendMessage(this.lf.getString("DONATOR.PREMIUM.ACCESS_DENIED"));
     			  return;
     		  }
+    	  	} else if (itemStack.getType() == Material.BED)
+    	  	{
+    	  		if (profile.isNight()) {
+    	  			player.setPlayerTime(6000, false);
+    	  			profile.setNight(false);
+    	  			player.sendMessage(ChatColor.GREEN + "Time set to day!");
+    	  		} else {
+    	  			player.setPlayerTime(18000, false);
+    	  			profile.setNight(true);
+    	  			player.sendMessage(ChatColor.GREEN + "Time set to night!");
+    	  		}
+    	  		return;
+    	  	} else if (itemStack.getType() == Material.WOOL) {
+    	  		showColorsInventory(player);
+    	  		return;
     	  	}
     	  }
     	  return;
       }
-      if ((e.getInventory().getTitle().equals(this.lf.getString("STATS.STATS_INVENTORY")))) 
+      if ((e.getInventory().getTitle().contains(this.lf.getString("STATS.STATS_INVENTORY")))) 
       {
     	  e.setCancelled(true);
     	  ItemStack itemStack = e.getCurrentItem();
-    	  if ((itemStack != null) && (itemStack.getItemMeta() != null) && (itemStack.getItemMeta().getDisplayName() != null) && itemStack.getType() != Material.EYE_OF_ENDER)
+    	  if ((itemStack != null) && (itemStack.getItemMeta() != null)) 
     	  {
-    		  String name = itemStack.getItemMeta().getDisplayName();
-              name = name.replace(" ", "");
-              name = ChatColor.stripColor(name);
+    		  String[] split = e.getInventory().getTitle().split("\\'");
+    		  if (!split[0].equalsIgnoreCase(player.getName())) {
+    			  profile = Profile.getProfile(split[0]);
+    			  if (profile == null) {
+    				  player.sendMessage(ChatColor.RED + "This user is invalid!");
+    				  return;
+    			  }
+    		  }
+    		  if ((itemStack.getItemMeta().getDisplayName() != null) && itemStack.getType() != Material.EYE_OF_ENDER)
+    	  	{
+    		  	String name = itemStack.getItemMeta().getDisplayName();
+              	name = name.replace(" ", "");
+              	name = ChatColor.stripColor(name);
               
-              Data.showLadderLeaderboard(player, profile, Ladder.getLadder(name), -1);
-    	  }
-    	  if ((itemStack != null && (itemStack.getItemMeta() != null) && (itemStack.getItemMeta().getDisplayName() != null) && itemStack.getType() == Material.EYE_OF_ENDER)) {
-    		  Data.showGlobalLeaderboard(player, profile, -1);
+              	Data.showLadderLeaderboard(player, profile, Ladder.getLadder(name), -1);
+    	  	}
+    	  	if ((itemStack != null && (itemStack.getItemMeta() != null) && (itemStack.getItemMeta().getDisplayName() != null) && itemStack.getType() == Material.EYE_OF_ENDER)) {
+    		  	Data.showGlobalLeaderboard(player, profile, -1);
+    	  	}	
     	  }
       }
       if ((e.getInventory().getTitle().equalsIgnoreCase("Teams")) && (profile.getTeam() != null))
@@ -247,6 +273,91 @@ public class QueueListeners
             }
           }
         }
+      }
+      if (e.getInventory().getTitle().equalsIgnoreCase("colors"))
+      {
+    	  e.setCancelled(true);
+    	  ItemStack is = e.getCurrentItem();
+
+    	  switch(ChatColor.stripColor(is.getItemMeta().getDisplayName())) {
+    	  case "Red": {
+    		  profile.setChatcolor("§c"); 
+    		  profile.setChatdata(14);
+    		  break;
+    	  }
+    	  case "Dark Red": {
+    		  profile.setChatcolor("§4");
+    		  profile.setChatdata(14);
+    	  }
+    	  case "Pink": {
+    		  profile.setChatcolor("§d"); 
+    		  profile.setChatdata(6);
+    		  break;
+    	  }
+    	  case "Orange": {
+    		  profile.setChatcolor("§6"); 
+    		  profile.setChatdata(1);
+    		  break;
+    	  }
+    	  case "Yellow": {
+    		  profile.setChatcolor("§e"); 
+    		  profile.setChatdata(4);
+    		  break;
+    	  }
+    	  case "Dark Green": {
+    		  profile.setChatcolor("§2"); 
+    		  profile.setChatdata(13);
+    		  break;
+    	  }
+    	  case "Green": {
+    		  profile.setChatcolor("§a"); 
+    		  profile.setChatdata(5);
+    		  break;
+    	  }
+    	  case "Dark Blue": {
+    		  profile.setChatcolor("§1"); 
+    		  profile.setChatdata(11);
+    		  break;
+    	  }
+    	  case "Blue": {
+    		  profile.setChatcolor("§9"); 
+    		  profile.setChatdata(9);
+    		  break;
+    	  }
+    	  case "Dark Aqua": {
+    		  profile.setChatcolor("§3");
+    		  profile.setChatdata(9);
+    		  break;
+    	  }
+    	  case "Aqua": {
+    		  profile.setChatcolor("§b"); 
+    		  profile.setChatdata(3);
+    		  break;
+    	  }
+    	  case "Purple": {
+    		  profile.setChatcolor("§5"); 
+    		  profile.setChatdata(10);
+    		  break;
+    	  }
+    	  case "Dark Gray": {
+    		  profile.setChatcolor("§8");
+    		  profile.setChatdata(7);
+    		  break;
+    	  }
+    	  case "Gray": {
+    		  profile.setChatcolor("§7");
+    		  profile.setChatdata(8);
+    		  break;
+    	  }
+    	  case "White": {
+    		  profile.setChatcolor("§f"); 
+    		  profile.setChatdata(0);
+    		  break;
+    	  }
+    	  
+    	  }
+    	  player.closeInventory();
+    	  showSettingsInventory(player, profile);
       }
     }
     if ((profile.isInArena()) && 
@@ -681,7 +792,18 @@ public class QueueListeners
 		  temp.add(s.replace("%VALUE%", message + ""));
 	  }
 	  ItemStack paper = Items.builder().setMaterial(Material.PAPER).setName(this.lf.getString("SETTINGS.PAPER.NAME")).setLore(temp).build();
-	  inventory.addItem(new ItemStack[]{pearl, paper});
+	  temp.clear();
+	  if (profile.isNight()) {
+		  message = "Night";
+	  } else {
+		  message = "Day";
+	  }
+	  for (String s : this.lf.getStringList("SETTINGS.BED.LORE")) {
+		  temp.add(s.replace("%VALUE%", message));
+	  }
+	  ItemStack bed = Items.builder().setMaterial(Material.BED).setName(this.lf.getString("SETTINGS.BED.NAME")).setLore(temp).build();
+	  ItemStack wool = Items.builder().setMaterial(Material.WOOL).setData((short) profile.getChatdata()).setName(this.lf.getString("SETTINGS.WOOL.NAME")).build();
+	  inventory.addItem(new ItemStack[]{pearl, paper, bed, wool});
 	  player.openInventory(inventory);
   }
   
@@ -764,9 +886,33 @@ public class QueueListeners
         	  if (string.contains("%RL%")) lore.add(string.replace("%RL%", profile.getRankedLosses().get(ladder) + ""));
           }
           ItemStack itemStack = Items.builder().setMaterial(ladder.getItemStack().getType()).setData(ladder.getItemStack().getDurability()).setName(this.lf.getString("STATS.ITEM_NAME").replace("%LADDER%", ladder.getName())).setLore(lore).build();
+          
           inventory.addItem(new ItemStack[]{s, itemStack});
       }
       player.openInventory(inventory);
+  }
+  
+  public void showColorsInventory(Player player) {
+	  Inventory inventory = Bukkit.createInventory((InventoryHolder)player, (int)9 * 3, "Colors");
+	  
+	  ItemStack darkred = Items.builder().setMaterial(Material.WOOL).setData((short)14).setName(ChatColor.DARK_RED + "Dark Red").build();
+	  ItemStack red = Items.builder().setMaterial(Material.WOOL).setData((short)14).setName(ChatColor.RED + "Red").build();
+	  ItemStack pink = Items.builder().setMaterial(Material.WOOL).setData((short)6).setName(ChatColor.LIGHT_PURPLE + "Pink").build();
+	  ItemStack orange = Items.builder().setMaterial(Material.WOOL).setData((short)1).setName(ChatColor.GOLD + "Orange").build();
+	  ItemStack yellow = Items.builder().setMaterial(Material.WOOL).setData((short)4).setName(ChatColor.YELLOW + "Yellow").build();
+	  ItemStack darkgreen = Items.builder().setMaterial(Material.WOOL).setData((short)13).setName(ChatColor.DARK_GREEN + "Dark Green").build();
+	  ItemStack green = Items.builder().setMaterial(Material.WOOL).setData((short)5).setName(ChatColor.GREEN + "Green").build();
+	  ItemStack darkblue = Items.builder().setMaterial(Material.WOOL).setData((short)11).setName(ChatColor.DARK_BLUE + "Dark Blue").build();
+	  ItemStack blue = Items.builder().setMaterial(Material.WOOL).setData((short)9).setName(ChatColor.BLUE + "Blue").build();
+	  ItemStack darkaqua = Items.builder().setMaterial(Material.WOOL).setData((short)9).setName(ChatColor.DARK_AQUA + "Dark Aqua").build();
+	  ItemStack aqua = Items.builder().setMaterial(Material.WOOL).setData((short)3).setName(ChatColor.AQUA + "Aqua").build();
+	  ItemStack purple = Items.builder().setMaterial(Material.WOOL).setData((short)10).setName(ChatColor.DARK_PURPLE + "Purple").build();
+	  ItemStack darkgrey = Items.builder().setMaterial(Material.WOOL).setData((short)7).setName(ChatColor.DARK_GRAY + "Dark Gray").build();
+	  ItemStack grey = Items.builder().setMaterial(Material.WOOL).setData((short)8).setName(ChatColor.GRAY + "Gray").build();
+	  ItemStack white = Items.builder().setMaterial(Material.WOOL).setName(ChatColor.WHITE + "White").build();
+	  
+	  inventory.addItem(new ItemStack[]{darkred, red, pink, orange, yellow, darkgreen, green, darkblue, blue, darkaqua, aqua, purple, darkgrey, grey, white});
+	  player.openInventory(inventory);
   }
   
 }

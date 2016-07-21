@@ -1,5 +1,6 @@
 package us.chiraq.practicepots.utils;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -36,8 +37,19 @@ public class Data {
     	DBCursor dbc = main.getSettings().find();
     	while (dbc.hasNext()) {
     		BasicDBObject dbo = (BasicDBObject)dbc.next();
+    		
             UUID uuid = UUID.fromString(dbo.getString("uuid"));
             Profile p = Profile.getProfile(uuid);
+            
+    		BasicDBList list;
+    		List<UUID> dwl = new ArrayList<UUID>();
+    		if (dbo.containsField("duelwhitelist")) {
+    			list = (BasicDBList)dbo.get("duelwhitelist");
+    			for (Object el : list) {
+    				dwl.add(UUID.fromString((String) el));
+    			}
+    		}
+    		
             boolean rankedUnlocked = false;
             if (dbo.containsField("rankedunlocked")) {
             	String s = dbo.getString("rankedunlocked");
@@ -56,9 +68,27 @@ public class Data {
             	s.replace("[", "").replace("]", "");
             	duelToggle = Boolean.parseBoolean(s);
             }
+            boolean night = false;
+            if (dbo.containsField("night")) {
+            	String s = dbo.getString("night");
+            	s.replace("[", "").replace("]", "");
+            	night = Boolean.parseBoolean(s);
+            }
+            String chatcolor = "§f";
+            if (dbo.containsField("chatcolor")) {
+            	chatcolor = dbo.getString("chatcolor");
+            }
+            int data = 0;
+            if (dbo.containsField("data")) {
+            	data = dbo.getInt("data");
+            }
             p.setRankedUnlocked(rankedUnlocked);
             p.setShowPlayers(vis);
             p.setDuelToggle(duelToggle);
+            p.setDuelWhiteList(dwl);
+            p.setNight(night);
+            p.setChatcolor(chatcolor);
+            p.setChatdata(data);
     	}
     }
     
@@ -67,10 +97,18 @@ public class Data {
     	for (Profile profile : Profile.getProfiles()) {
     		DBCursor dbc = settings.find(new BasicDBObject("uuid", profile.getUuid().toString()));
     		BasicDBObject dbo = new BasicDBObject("uuid", profile.getUuid().toString());
+    		BasicDBList list = new BasicDBList();
+    		for (UUID i : profile.getDuelWhiteList()) {
+    			list.add(i.toString());
+    		}
     		dbo.append("uuid", profile.getUuid());
     		dbo.append("rankedunlocked", profile.isRankedUnlocked());
     		dbo.append("playervisibility", profile.isShowPlayers());
     		dbo.append("dueltoggle", profile.isDuelToggle());
+    		dbo.append("duelwhitelist", list);
+    		dbo.append("night", profile.isNight());
+    		dbo.append("chatcolor", profile.getChatcolor());
+    		dbo.append("data", profile.getChatdata());
             if (dbc.hasNext()) {
                 settings.update(dbc.getQuery(), dbo);
                 continue;

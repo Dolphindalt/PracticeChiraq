@@ -2,7 +2,7 @@ main: us.chiraq.practicepots.Nanny
 name: Nanny
 description: Practice plugin for chiraq.us
 version: 1.2.8-RELEASE
-depend: [ProtocolLib, cLib]
+depend: [ProtocolLib, cLib, bChatManager, Vault]
 commands:
   ladder:
   arena:
@@ -19,6 +19,10 @@ commands:
     aliases: spec
   statistics:
     aliases: [stats,stat]
+  duelwhitelist:
+    aliases: dwl
+  pm:
+    aliases: [msg,whisper,w,tell]
 permissions:
   staff.mod:
     decription: Mod permissions.

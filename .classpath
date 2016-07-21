@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/ProtocolLib (2).jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/cLib.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/vSpigot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/bChatManager-3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/epicDepend/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

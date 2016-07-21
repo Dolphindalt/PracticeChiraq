@@ -36,6 +36,11 @@ implements Listener {
         Profile pro = null;
         if ((pro = Profile.getProfile(event.getPlayer().getUniqueId())) != null) {
         	Profile.getOnlineProfiles().add(pro);
+        	if (pro.isNight()) {
+	  			event.getPlayer().setPlayerTime(18000, false);
+        	} else {
+        		event.getPlayer().setPlayerTime(6000, false);
+        	}
         }
         for (Profile p : Profile.getOnlineProfiles()) {
         	if (p.isShowPlayers()) {
