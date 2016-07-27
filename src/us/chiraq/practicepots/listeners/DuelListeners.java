@@ -40,7 +40,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DuelListeners
@@ -187,7 +186,13 @@ implements Listener {
         Profile profile = Profile.getProfile(player.getUniqueId());
         Profile.getOnlineProfiles().remove(profile);
         profile.setQueueCooldown(false);
-        new InventorySave(player);
+        if (profile.getQueue() != null) {
+        	profile.getSearchingLadder().getRankedQueue().remove((Object)player);
+        	profile.getSearchingLadder().getUnrankedQueue().remove((Object)player);
+        	profile.getSearchingLadder().getPremiumRankedQueue().remove((Object)player);
+        	profile.getQueue().cancel();
+        }
+        if (!profile.isInSpawn()) new InventorySave(player);
         if (profile.isInSpectator()) {
         	profile.setInSpectator(false);
         	profile.setSpectating(null);
@@ -264,12 +269,8 @@ implements Listener {
             }
             duel.getProfile1().setDuel(null);
             duel.getProfile2().setDuel(null);
-            new BukkitRunnable(){
 
-                public void run() {
-                    DuelListeners.this.pm.sendToSpawn(otherPlayer);
-                }
-            }.runTaskLater((Plugin)this.main, 20);
+            DuelListeners.this.pm.sendToSpawn(otherPlayer);
         }
     }
 

@@ -31,6 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -111,6 +112,14 @@ public class QueueListeners
           .runTaskLater(this.main, 4L);
       }
     }
+  }
+  
+  @EventHandler
+  public void inventoryOpen(InventoryOpenEvent e) {
+	  Profile p = Profile.getProfilefromOnline(e.getPlayer().getUniqueId());
+		 if (p.isQueueCooldown()) {
+			 e.setCancelled(true);
+		 }
   }
   
   @EventHandler
@@ -629,6 +638,10 @@ public class QueueListeners
       if (e.getAction().name().contains("RIGHT") && e.getItem() != null && e.getItem().getType() == Material.PAPER && profile.isInSpectator()) {
     	  Profile dueler = pm.getRandomDuelingProfile(player);
     	  if (dueler == null) return;
+		  Profile.getProfilefromOnline(profile.getSpectatingPlayer().getUniqueId()).removeSpectator(player);
+		  profile.setSpectating(null);
+		  profile.setInSpectator(false);
+		  pm.hidePlayerFromAll(player);
     	  pm.spectatePlayer(Bukkit.getPlayer(dueler.getUuid()), player, dueler, profile);
     	  return;
       }

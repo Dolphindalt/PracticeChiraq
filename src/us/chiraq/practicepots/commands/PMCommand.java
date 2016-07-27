@@ -63,7 +63,7 @@ public class PMCommand implements CommandExecutor {
 				.replace("%PLAYER%", player.getDisplayName());
 	}
 	
-	public String formatToString(String chatcolor, String player, String format) {
+	public String formatToString(String chatcolor, String player, String format) throws NullPointerException {
 		return format
 				.replace("%C%", chatcolor)
 				.replace("%PLAYER%", player);

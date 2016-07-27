@@ -1,7 +1,6 @@
 package us.chiraq.practicepots.utils;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,15 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 public class InventorySave {
     private static Set<InventorySave> saves = new HashSet<InventorySave>();
-    private Player player;
-    private ItemStack[] contents;
-    private ItemStack[] armor;
-    private int hunger;
-    private double health;
-    private List<PotionEffect> effects;
+    private final Player player;
+    private final ItemStack[] contents;
+    private final ItemStack[] armor;
+    private final int hunger;
+    private final double health;
 
     public InventorySave(Player player) {
         this.player = player;
@@ -80,34 +77,6 @@ public class InventorySave {
 
     public double getHealth() {
         return this.health;
-    }
-
-    public List<PotionEffect> getEffects() {
-        return this.effects;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void setContents(ItemStack[] contents) {
-        this.contents = contents;
-    }
-
-    public void setArmor(ItemStack[] armor) {
-        this.armor = armor;
-    }
-
-    public void setHunger(int hunger) {
-        this.hunger = hunger;
-    }
-
-    public void setHealth(double health) {
-        this.health = health;
-    }
-
-    public void setEffects(List<PotionEffect> effects) {
-        this.effects = effects;
     }
 }
 

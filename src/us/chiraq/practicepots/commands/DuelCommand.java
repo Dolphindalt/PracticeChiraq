@@ -54,6 +54,10 @@ TabCompleter {
             	sender.sendMessage(ChatColor.RED + "The player you tried to duel has their duel requests toggled off!");
             	return true;
             }
+            if (c.getDuel() != null) {
+            	sender.sendMessage(ChatColor.RED + "This player is in a duel!");
+            	return true;
+            }
             if (profile.isInSpectator()) {
             	sender.sendMessage(DuelCommand.lf.getString("SPECTATOR.IN_SPECTATOR_MESSAGE"));
             	return true;
@@ -85,6 +89,10 @@ TabCompleter {
                 player.sendMessage(DuelCommand.lf.getString("NOPE"));
                 return true;
             }
+            if (challengedProfile.isInSpectator()) {
+            	player.sendMessage(ChatColor.RED + "The player who challenged you is now a spectator!");
+            	return true;
+            }
             if (profile.getTeam() != null) {
                 player.sendMessage(DuelCommand.lf.getString("NOPE"));
                 return true;
@@ -115,6 +123,7 @@ TabCompleter {
             } else {
             	new Duel(player, challenged, profile, challengedProfile, challengedProfile.getSelected(), challengedProfile.getArena(), 1);
             }
+            profile.getDuelRequests().remove(challenged);
             return true;
         } 
         for (String message : DuelCommand.lf.getStringList("DUEL_COMMAND.USAGE")) {

@@ -87,7 +87,7 @@ public class Data {
             p.setDuelToggle(duelToggle);
             p.setDuelWhiteList(dwl);
             p.setNight(night);
-            p.setChatcolor(chatcolor);
+            if (chatcolor != null) p.setChatcolor(chatcolor);
             p.setChatdata(data);
     	}
     }
