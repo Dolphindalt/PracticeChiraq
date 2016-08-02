@@ -22,6 +22,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -43,8 +44,11 @@ public class TeamDuel {
     private boolean started;
     private boolean countdown;
     private BukkitTask task;
+    
+    private List<Entity> activeEntities;
 
     public TeamDuel(Team team1, Team team2, Ladder ladder, Arena arena) {
+    	this.activeEntities = new ArrayList<Entity>();
         this.team1 = team1;
         this.team2 = team2;
         this.ladder = ladder;
@@ -145,6 +149,11 @@ public class TeamDuel {
         }
         if (this.task != null) {
             this.task.cancel();
+        }
+        
+        for (Entity ent : activeEntities) {
+        	activeEntities.remove(ent);
+        	ent.remove();
         }
         
         new BukkitRunnable(){
@@ -309,5 +318,21 @@ public class TeamDuel {
         this.task = task;
     }
 
+	public List<Entity> getActiveEntities() {
+		return activeEntities;
+	}
+
+	public void setActiveEntities(List<Entity> activeEntities) {
+		this.activeEntities = activeEntities;
+	}
+
+    public void addActiveEntites(Entity entity) {
+    	this.activeEntities.add(entity);
+    }
+    
+    public void removeActiveEntities(Entity entity) {
+    	this.activeEntities.remove(entity);
+    }
+    
 }
 

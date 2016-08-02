@@ -45,8 +45,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class DuelListeners
 implements Listener {
     private Nanny main = Nanny.getInstance();
+    private EntityHider eh;
     private LangFile lf = this.main.getLangFile();
     private ProfileManager pm = this.main.getProfileManager();
+    
+    public DuelListeners(EntityHider eh) {
+    	this.eh = eh;
+    }
     
     /*
      * Enabled force condition propagation
@@ -68,10 +73,12 @@ implements Listener {
             while (n2 < n) {
                 final Player online = arrplayer[n2];
                 if (online != duel.getPlayer1() && online != duel.getPlayer2()) {
+                	eh.hideEntity(online, e.getEntity());
                 	((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
                 }
                 ++n2;
             }
+            profile.getDuel().addActiveEntity(e.getEntity());
             return;
         }
         if (profile.getTeam() != null && profile.getTeam().getDuel() != null) {
@@ -89,10 +96,12 @@ implements Listener {
         while (all < n) {
             final Player online = teamDuel[all];
             if (online != player) {
+            	eh.hideEntity(online, e.getEntity());
                 ((CraftPlayer)online).getHandle().playerConnection.sendPacket((Packet)new PacketPlayOutEntityDestroy(new int[]{e.getEntity().getEntityId()}));
             }
             ++all;
         }
+        profile.getDuel().addActiveEntity(e.getEntity());
     }
     
     @SuppressWarnings("deprecation")
@@ -220,6 +229,9 @@ implements Listener {
                 } else if (duel.getTeam2Left() == 0) {
                     duel.setWinner(duel.getTeam1());
                 }
+                for (Entity ent : duel.getActiveEntities()) {
+                	eh.setVisibility(player, ent.getEntityId(), false);
+                }
             }
             return;
         }
@@ -264,6 +276,10 @@ implements Listener {
             FancyMessage fancyMessage = new FancyMessage(this.lf.getString("QUEUE.FINISH.INVENTORY_VIEW")).then((Object)ChatColor.YELLOW + otherPlayer.getName()).command("/_ " + otherPlayer.getUniqueId().toString()).then((Object)ChatColor.YELLOW + ", " + player.getName() + ".").command("/_ " + player.getUniqueId().toString());
             fancyMessage.send(player);
             fancyMessage.send(otherPlayer);
+            for (Entity ent : duel.getActiveEntities()) {
+            	duel.removeActiveEntity(ent);
+            	ent.remove();
+            }
             if (duel.getTask() != null) {
                 duel.getTask().cancel();
             }
@@ -307,6 +323,10 @@ implements Listener {
           duel.setWinner(duel.getTeam1());
         }
         //profile.getTeam().resetScoreboard(player);
+        
+        for (Entity ent : duel.getActiveEntities()) {
+        	eh.setVisibility(player, ent.getEntityId(), false);
+        }
         
         new BukkitRunnable()
         {

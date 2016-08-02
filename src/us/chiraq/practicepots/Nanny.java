@@ -31,6 +31,8 @@ import us.chiraq.practicepots.game.Ladder;
 import us.chiraq.practicepots.listeners.ChunkListener;
 import us.chiraq.practicepots.listeners.DuelListeners;
 import us.chiraq.practicepots.listeners.EditorListeners;
+import us.chiraq.practicepots.listeners.EntityHider;
+import us.chiraq.practicepots.listeners.EntityHider.Policy;
 import us.chiraq.practicepots.listeners.QueueListeners;
 import us.chiraq.practicepots.listeners.SpawnListeners;
 import us.chiraq.practicepots.listeners.WeatherListener;
@@ -71,6 +73,7 @@ extends JavaPlugin {
     private ProfileManager profileManager;
     //private Glaedr glaedr;
     private ProtocolManager protocolManager;
+    private EntityHider eh;
     private Location kitEditor;
     private MongoClient mc;
     private DB db;
@@ -98,6 +101,7 @@ extends JavaPlugin {
         Data.loadLadders();
         Data.loadProfiles();
         Data.loadSettings();
+        eh = new EntityHider(this, Policy.BLACKLIST);
         this.registerManagers();
         this.registerListeners();
         this.registerCommands();
@@ -208,7 +212,7 @@ extends JavaPlugin {
     private void registerListeners() {
         Bukkit.getPluginManager().registerEvents((Listener)new SpawnListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new QueueListeners(), (Plugin)this);
-        Bukkit.getPluginManager().registerEvents((Listener)new DuelListeners(), (Plugin)this);
+        Bukkit.getPluginManager().registerEvents((Listener)new DuelListeners(eh), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new EditorListeners(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new ChunkListener(), (Plugin)this);
         Bukkit.getPluginManager().registerEvents((Listener)new WeatherListener(), (Plugin)this);
@@ -280,5 +284,9 @@ extends JavaPlugin {
 		return settings;
 	}
 
+	public EntityHider getEntityHider() {
+		return this.eh;
+	}
+	
 }
 

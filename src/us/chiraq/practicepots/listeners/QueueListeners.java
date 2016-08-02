@@ -18,6 +18,7 @@ import us.chiraq.practicepots.game.kit.Kit;
 import us.chiraq.practicepots.profile.Profile;
 import us.chiraq.practicepots.profile.ProfileManager;
 import us.chiraq.practicepots.utils.Data;
+import us.chiraq.practicepots.utils.InventorySave;
 import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
@@ -127,6 +128,7 @@ public class QueueListeners
   {
     Player player = (Player)e.getWhoClicked();
     Profile profile = Profile.getProfile(player.getUniqueId());
+    if (e.getInventory().getName().equals(InventorySave.invName)) e.setCancelled(true);
     if (profile.isInSpawn())
     {
       Team challengingTeam;

@@ -1,5 +1,8 @@
 package us.chiraq.practicepots.game.fight;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
@@ -14,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -35,11 +39,15 @@ public class Duel {
     private boolean started;
     private boolean countdown;
     private int ranked;
+    
+    private List<Entity> activeEntities;
+    
     //private PlayerScoreboard scoreboard1;
     //private PlayerScoreboard scoreboard2;
     private BukkitTask task;
 
     public Duel(Player player1, Player player2, Profile profile1, Profile profile2, Ladder ladder, Arena arena, int ranked) {
+    	this.activeEntities = new ArrayList<Entity>();
         this.player1 = player1;
         this.player2 = player2;
         this.profile1 = profile1;
@@ -318,5 +326,21 @@ public class Duel {
         this.task = task;
     }
 
+	public List<Entity> getActiveEntities() {
+		return activeEntities;
+	}
+
+	public void setActiveEntities(List<Entity> activeEntities) {
+		this.activeEntities = activeEntities;
+	}
+
+	public void addActiveEntity(Entity entity) {
+		this.activeEntities.add(entity);
+	}
+	
+	public void removeActiveEntity(Entity entity) {
+		this.removeActiveEntity(entity);
+	}
+	
 }
 

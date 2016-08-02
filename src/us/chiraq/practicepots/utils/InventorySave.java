@@ -11,6 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 public class InventorySave {
+	
+	public static final String invName = "Inventory";
+	
     private static Set<InventorySave> saves = new HashSet<InventorySave>();
     private final Player player;
     private final ItemStack[] contents;
@@ -37,7 +40,7 @@ public class InventorySave {
 
     public void showPlayer(Player toShow) {
         int i;
-        Inventory inventory = Bukkit.createInventory((InventoryHolder)toShow, (int)54, (String)this.player.getName());
+        Inventory inventory = Bukkit.createInventory((InventoryHolder)toShow, (int)54, (String)invName);
         for (i = 0; i < this.contents.length; ++i) {
             inventory.setItem(i, this.contents[i]);
         }

@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/mongodb-driver-3.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/ProtocolLib (2).jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/cLib.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/vSpigot.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/bChatManager-3.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/epicDepend/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/cLib ORIGINAL.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dalton/Desktop/Develope Stuff/Java/Libraries/Nanny/ProtocolLib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

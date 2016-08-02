@@ -30,6 +30,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class Data {
+	
     private static Nanny main = Nanny.getInstance();
     private static int pagesSize = main.getLangFile().getInt("STATS.LEADERBOARD.AMOUNTPERPAGE");
     
