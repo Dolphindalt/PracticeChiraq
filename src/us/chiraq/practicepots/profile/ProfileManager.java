@@ -3,30 +3,21 @@ package us.chiraq.practicepots.profile;
 import com.comphenix.protocol.ProtocolManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.server.v1_7_R4.EntityPlayer;
-import net.minecraft.server.v1_7_R4.EntityTracker;
-import net.minecraft.server.v1_7_R4.EntityTrackerEntry;
-import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_7_R4.WorldServer;
 import us.chiraq.practicepots.Nanny;
 import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
 import us.chiraq.practicepots.game.Team;
 import us.chiraq.practicepots.game.fight.TeamDuel;
+import us.chiraq.practicepots.listeners.EntityHider;
 import us.chiraq.practicepots.utils.Items;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +30,11 @@ public class ProfileManager
 private ProtocolManager protocolManager = this.main.getProtocolManager();
   private ConfigFile cf = this.main.getConfigFile();
   private LangFile lf = this.main.getLangFile();
+  private EntityHider eh;
+  
+  public ProfileManager(EntityHider eh) {
+	  this.eh = eh;
+  }
   
   public Inventory getTeamDuelInventory(Player player, Team team, int page)
   {
@@ -189,11 +185,7 @@ public void setupPlayers()
   
   public void hidePlayer(Player hiding, Player from)
   {
-    from.hidePlayer(hiding);
-    EntityPlayer nmsFrom = ((CraftPlayer)from).getHandle();
-    EntityPlayer nmsHiding = ((CraftPlayer)hiding).getHandle();
-    PacketPlayOutPlayerInfo packet = PacketPlayOutPlayerInfo.addPlayer(nmsHiding);
-    nmsFrom.playerConnection.sendPacket(packet);
+    eh.hideEntity(from, hiding);
   }
   
   @SuppressWarnings("deprecation")
@@ -207,7 +199,7 @@ public void updateStaffView()
         {
           Profile playerProfile = Profile.getProfile(player.getUniqueId());
           if ((staffProfile.isInSpawn()) && (!playerProfile.isInSpawn())) {
-            staff.showPlayer(player);
+            eh.showEntity(staff, player);
           }
         }
       }
@@ -226,35 +218,12 @@ public void hidePlayerFromAll(Player player) {
 public void showAllPlayers(Player player) {
 	for (Player online : Bukkit.getOnlinePlayers()) {
 		if (online == player) continue;
-		player.showPlayer(online);
+		eh.showEntity(player, online);
 	}
 }
 
 public void showPlayer(Player hiding, Player from) {
-	from.showPlayer(hiding);
-	EntityPlayer nmsFrom = ((CraftPlayer)from).getHandle();
-	EntityPlayer nmsHiding = ((CraftPlayer)hiding).getHandle();
-	PacketPlayOutPlayerInfo packet = PacketPlayOutPlayerInfo.removePlayer(nmsHiding);
-	nmsFrom.playerConnection.sendPacket(packet);
-}
-
-public void forceUpdateEntity(Entity entity, Player observer) {
-	World world = entity.getWorld();
-	WorldServer worldServer = ((CraftWorld) world).getHandle();
-	
-	EntityTracker tracker = worldServer.tracker;
-	EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(entity.getEntityId());
-	
-	EntityPlayer nmsPlayers = getNmsPlayer(observer);
-	
-	entry.trackedPlayers.remove(nmsPlayers);
-	entry.scanPlayers(Arrays.asList(nmsPlayers));
-}
-
-private static EntityPlayer getNmsPlayer(Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
- 
-    return craftPlayer.getHandle();
+	eh.showEntity(from, hiding);
 }
 
 public Profile getRandomDuelingProfile(Player sender) {
@@ -317,8 +286,8 @@ public void spectatePlayer(Player fighter, Player sender, Profile f, Profile s) 
 	sender.sendMessage(this.lf.getString("SPECTATOR.JOIN").replace("%PLAYER%", fighter.getName()));
 	if (f.getDuel() != null && f.getTeam() == null) {
 		this.hidePlayerFromAll(sender);
-		sender.showPlayer(f.getDuel().getPlayer1());
-		sender.showPlayer(f.getDuel().getPlayer2());
+		eh.showEntity(sender, f.getDuel().getPlayer1());
+		eh.showEntity(sender, f.getDuel().getPlayer2());
 		sender.teleport(fighter);
 		sender.setGameMode(GameMode.CREATIVE);
 	} else if (f.getTeam() != null) {

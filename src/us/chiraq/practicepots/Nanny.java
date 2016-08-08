@@ -205,7 +205,7 @@ extends JavaPlugin {
     }
 
     private void registerManagers() {
-        this.profileManager = new ProfileManager();
+        this.profileManager = new ProfileManager(eh);
         this.profileManager.setupPlayers();
     }
 

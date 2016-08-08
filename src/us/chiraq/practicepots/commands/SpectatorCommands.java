@@ -35,11 +35,6 @@ public class SpectatorCommands implements CommandExecutor, TabCompleter {
 				s.setInSpectator(false);
 				pm.sendToSpawn(spec);
 				return true;
-			} else if (args[0].equalsIgnoreCase("test")) {
-				Player player = (Player) sender;
-				Profile pro = Profile.getProfile(player.getUniqueId());
-				Bukkit.broadcastMessage(pro.getSpectatingPlayers().toString());
-				return true;
 			}
 			Player fighter;
 			if ((fighter = Bukkit.getPlayer(args[0])) != null) {

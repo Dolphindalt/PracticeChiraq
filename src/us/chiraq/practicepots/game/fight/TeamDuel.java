@@ -114,12 +114,12 @@ public class TeamDuel {
 	private void showAll() {
         for (Player teamPlayer1 : this.team1.getMembers()) {
             for (Player teamPlayer2 : this.team2.getMembers()) {
-                teamPlayer1.showPlayer(teamPlayer2);
+                Nanny.getInstance().getProfileManager().showPlayer(teamPlayer2, teamPlayer1);
             }
         }
         for (Player teamPlayer2 : this.team2.getMembers()) {
             for (Player teamPlayer12 : this.team1.getMembers()) {
-                teamPlayer2.showPlayer(teamPlayer12);
+                Nanny.getInstance().getProfileManager().showPlayer(teamPlayer12, teamPlayer2);
             }
         }
         for (Player player : this.getAllPlayers()) {
@@ -197,8 +197,7 @@ public class TeamDuel {
 
     public void setUpSpectator(Player player) {
     	for (Player p : getAllPlayers()) {
-    		player.showPlayer(p);
-    		Nanny.getInstance().getProfileManager().forceUpdateEntity(p, player);
+    		Nanny.getInstance().getProfileManager().showPlayer(p, player);
     	}
     }
     

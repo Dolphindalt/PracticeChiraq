@@ -150,7 +150,8 @@ public class QueueListeners
           {
         	  if (player.hasPermission("practice.premium")) {
         		  profile.setSelected(ladder);
-        		  DuelCommand.arenaPlayer(player, ladder);
+        		  player.closeInventory();
+        		  player.openInventory(DuelCommand.arenaPlayer(player, ladder));
         		  return;
         	  }
             challengingTeam.getChallenges().put(profile.getTeam(), ladder);
