@@ -5,6 +5,8 @@ DATABASE:
     ENABLED: false
     USERNAME: "username"
     PASSWORD: "password"
+KNOCKBACK:
+  BASE: 0.3
 HOTBAR_ITEMS:
   ENABLED: true
   BOOK:

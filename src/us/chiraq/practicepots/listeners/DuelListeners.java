@@ -8,6 +8,7 @@ import net.minecraft.server.v1_7_R4.Packet;
 import net.minecraft.server.v1_7_R4.PacketPlayInClientCommand;
 import net.minecraft.server.v1_7_R4.PacketPlayOutEntityDestroy;
 import us.chiraq.practicepots.Nanny;
+import us.chiraq.practicepots.files.types.ConfigFile;
 import us.chiraq.practicepots.files.types.LangFile;
 import us.chiraq.practicepots.game.Team;
 import us.chiraq.practicepots.game.fight.Duel;
@@ -47,10 +48,15 @@ implements Listener {
     private Nanny main = Nanny.getInstance();
     private EntityHider eh;
     private LangFile lf = this.main.getLangFile();
+    private ConfigFile cf = main.getConfigFile();
+    
+    private float kb;
+    
     private ProfileManager pm = this.main.getProfileManager();
     
     public DuelListeners(EntityHider eh) {
     	this.eh = eh;
+    	this.kb = (float) cf.getConfiguration().getDouble("KNOCKBACK.BASE");
     }
     
     /*
@@ -168,6 +174,11 @@ implements Listener {
         		return;
         	}
         	if (e.getDamager() instanceof Player) {
+        		Player attacked = (Player) e.getEntity();
+        		Player attacker = (Player) e.getDamager();
+        		
+        		attacked.setVelocity(attacked.getVelocity().add(attacked.getLocation().toVector().subtract(attacker.getLocation().toVector()).normalize().multiply(kb)));
+        		
         		Profile damager = Profile.getProfile(((Player)e.getDamager()).getUniqueId());
         		if (damager.isInSpectator()) {
         			e.setCancelled(true);
